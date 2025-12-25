@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HDIP - Audit Team Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #0d8c4c;
+            --light-green: #e7f9ef;
+            --secondary-green: #06c167;
+            --card-bg: #ffffff;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --border-radius: 8px;
+            --text-dark: #1a1a1a;
+            --text-muted: #666666;
+            --border-light: #e9ecef;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f1ed 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-top: 80px;
+            margin: 0;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-green) 0%, #0a6d3a 100%);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            border-bottom-color: white;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .homepage {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f1ed 100%);
+            padding: 40px 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-green) 0%, #0a6d3a 100%);
+            color: white;
+            padding: 60px 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-section h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary-green);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .pending-reviews {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .pending-reviews h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+        }
+
+        .reviews-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reviews-table th {
+            background: var(--light-green);
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary-green);
+            border-bottom: 2px solid var(--secondary-green);
+        }
+
+        .reviews-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .reviews-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.pending-verification {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.verified {
+            background: var(--light-green);
+            color: var(--primary-green);
+        }
+
+        .audit-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-green);
+        }
+
+        .header-section h1 {
+            color: var(--primary-green);
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+
+        .header-section .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .company-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 13px;
+        }
+
+        .detail-value {
+            padding: 8px 12px;
+            background: var(--light-green);
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .audit-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .audit-card h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 25px 0;
+        }
+
+        .audit-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .audit-table thead {
+            background: var(--light-green);
+            border-bottom: 2px solid var(--secondary-green);
+        }
+
+        .audit-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary-green);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .audit-table tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background-color 0.2s;
+        }
+
+        .audit-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .audit-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .doc-number {
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 13px;
+            width: 40px;
+        }
+
+        .doc-name {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .certifier-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .certifier-status.compliant {
+            background: var(--light-green);
+            color: var(--primary-green);
+        }
+
+        .certifier-status.non-compliant {
+            background: #ffe7e7;
+            color: #dc3545;
+        }
+
+        .certifier-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .certifier-remarks {
+            background: #f5f5f5;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-left: 3px solid var(--primary-green);
+        }
+
+        .verification-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .verify-btn {
+            padding: 6px 12px;
+            border: 2px solid var(--border-light);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        .verify-btn:hover {
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .verify-btn.approved {
+            background: var(--light-green);
+            border-color: var(--secondary-green);
+            color: var(--primary-green);
+        }
+
+        .verify-btn.rejected {
+            background: #ffe7e7;
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .audit-notes {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .audit-notes h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+            color: var(--text-dark);
+        }
+
+        .audit-remarks-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .audit-remarks-textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(13, 140, 76, 0.1);
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0a6d3a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 140, 76, 0.2);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary-green);
+            background: white;
+            color: var(--primary-green);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-green);
+        }
+
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: var(--light-green);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .summary-card .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+
+            .company-details {
+                grid-template-columns: 1fr;
+            }
+
+            .audit-table {
+                font-size: 12px;
+            }
+
+            .audit-table td,
+            .audit-table th {
+                padding: 10px 8px;
+            }
+
+            .verification-buttons {
+                flex-direction: column;
+            }
+
+            .verify-btn {
+                padding: 8px 10px;
+            }
+
+            .summary-section {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-section h1 {
+                font-size: 28px;
+            }
+
+            .hero-section p {
+                font-size: 16px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a class="navbar-brand" onclick="navigateToPage('home')">
+                <i class="fas fa-mosque"></i> HDIP
+            </a>
+            <ul class="nav-links">
+                <li><a onclick="navigateToPage('home')" class="nav-link active">Dashboard</a></li>
+                <li><a onclick="navigateToPage('verification')" class="nav-link">Verification</a></li>
+                <li><a onclick="logout()" class="nav-link">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Homepage -->
+    <div id="home-page" class="page active">
+        <div class="homepage">
+            <div class="hero-section">
+                <h1><i class="fas fa-shield-alt"></i> Audit Team Verification</h1>
+                <p>HALAL DEVELOPMENT INSTITUTE OF THE PHILIPPINES (HDIP)</p>
+                <p style="font-size: 16px; margin-bottom: 0;">Verify conformity decisions from the Halal Certifying Body</p>
+            </div>
+
+            <div class="dashboard-container">
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingStatCount">0</div>
+                        <div class="stat-label">Pending Verification</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="approvedStatCount">0</div>
+                        <div class="stat-label">Verified & Approved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="correctionStatCount">0</div>
+                        <div class="stat-label">Corrections Requested</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="rejectedStatCount">0</div>
+                        <div class="stat-label">Rejected</div>
+                    </div>
+                </div>
+
+                <!-- Pending Reviews -->
+                <div class="pending-reviews">
+                    <h3><i class="fas fa-clipboard-list"></i> Pending Verifications</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="reviews-table">
+                            <thead>
+                                <tr>
+                                    <th>Application ID</th>
+                                    <th>Company Name</th>
+                                    <th>Certifier Name</th>
+                                    <th>Date Submitted</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingReviewsBody">
+                                <!-- Now populated dynamically from localStorage -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Page -->
+    <div id="verification-page" class="page">
+        <div class="audit-container">
+            <!-- Header Section -->
+            <div class="header-section">
+                <h1><i class="fas fa-check-circle"></i> Audit Team Verification Form</h1>
+                <p class="subtitle">Review & Verify Halal Certifying Body Decisions</p>
+
+                <div class="company-details">
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Company</label>
+                            <div class="detail-value" id="companyDisplay">-</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Contact Person</label>
+                            <div class="detail-value" id="contactDisplay">-</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Address</label>
+                            <div class="detail-value" id="addressDisplay">-</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Certifier Name</label>
+                            <div class="detail-value" id="certifierDisplay">-</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Certification Date</label>
+                            <div class="detail-value" id="certDateDisplay">-</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Audit Team Member</label>
+                            <input type="text" class="detail-input" id="auditMemberName" placeholder="Enter your name">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="summary-section">
+                <div class="summary-card">
+                    <div class="label">Total Documents</div>
+                    <div class="value" id="totalDocsCount">0/15</div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Certifier Approved</div>
+                    <div class="value" id="certifierApprovedCount" style="color: #06c167;">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Certifier Rejected</div>
+                    <div class="value" id="certifierRejectedCount" style="color: #dc3545;">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Your Verifications</div>
+                    <div class="value" id="auditVerifyCount" style="color: var(--primary-green);">0</div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <button class="btn btn-outline" onclick="clearAllVerifications()"><i class="fas fa-redo"></i> Clear All</button>
+                <button class="btn btn-primary" onclick="submitVerification()"><i class="fas fa-paper-plane"></i> Submit Verification</button>
+            </div>
+
+            <!-- Verification Checklist Card -->
+            <div class="audit-card">
+                <h2><i class="fas fa-list-check"></i> Document Verification Checklist</h2>
+                <div style="overflow-x: auto;">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">No.</th>
+                                <th style="width: 25%">Document</th>
+                                <th style="width: 15%">Certifier Status</th>
+                                <th style="width: 25%">Certifier Remarks</th>
+                                <th style="width: 20%">Your Verification</th>
+                                <th style="width: 10%">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="verificationBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Audit Notes Section -->
+            <div class="audit-notes">
+                <h3><i class="fas fa-sticky-note"></i> Audit Team Review & Recommendations</h3>
+                <textarea class="audit-remarks-textarea" id="auditRemarks" placeholder="Add your verification findings, recommendations, or any issues to address..."></textarea>
+                <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="saveVerification()"><i class="fas fa-save"></i> Save Verification</button>
+                    <button class="btn btn-secondary" onclick="printVerification()"><i class="fas fa-print"></i> Print Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Document checklist data
+        const documents = [
+            { id: 1, name: 'Bus. Permit' },
+            { id: 2, name: 'License to Operate' },
+            { id: 3, name: 'Mayor\'s Permit' },
+            { id: 4, name: 'Brgy. Permit' },
+            { id: 5, name: 'FDA CPR of the Products' },
+            { id: 6, name: 'DTI-License' },
+            { id: 7, name: 'Sanitary Permit' },
+            { id: 8, name: 'Fire Clearance Certificate' },
+            { id: 9, name: 'Environment Certificate - DENR' },
+            { id: 10, name: 'GMP, HACCP, ISO Certificate (if any)' },
+            { id: 11, name: 'Packaging Halal Certificate' },
+            { id: 12, name: 'Warehouse Halal Certificate' },
+            { id: 13, name: 'Matrix\'s of Raw mats' },
+            { id: 14, name: 'Halal Certificate of Raw mats' },
+            { id: 15, name: 'Submission of previous Halal Certificate from HDIP' }
+        ];
+
+        // State
+        let verification = {
+            documents: documents.map(d => ({
+                ...d,
+                certifierStatus: 'pending',
+                certifierRemarks: '',
+                auditStatus: 'pending',
+                auditNotes: ''
+            })),
+            company: {},
+            auditMember: ''
+        };
+
+        // Dynamic data management system
+        let applications = [];
+
+        // Retrieve applications from localStorage
+        function loadApplicationsFromCertifier() {
+            // Check for halal certifying body submissions
+            const submittedApps = JSON.parse(localStorage.getItem('submittedApplications')) || [];
+
+            // Check for individual certifier submissions
+            const certifierData = JSON.parse(localStorage.getItem('halal_certifier_data')) || {};
+
+            applications = [];
+
+            // Load from submitted applications
+            if (submittedApps.length > 0) {
+                submittedApps.forEach((app, index) => {
+                    applications.push({
+                        id: app.id || `APP-${Date.now()}-${index}`,
+                        company: app.company || 'N/A',
+                        certifier: app.certifier || 'Certifier',
+                        dateSubmitted: app.dateSubmitted || new Date().toISOString().split('T')[0],
+                        status: app.status || 'pending',
+                        data: app
+                    });
+                });
+            }
+
+            // Load from certifier data storage
+            if (certifierData.applications) {
+                certifierData.applications.forEach((app, index) => {
+                    if (!applications.find(a => a.id === app.id)) {
+                        applications.push({
+                            id: app.id || `APP-${Date.now()}-${index}`,
+                            company: app.companyName || 'N/A',
+                            certifier: app.certifierName || 'Certifier',
+                            dateSubmitted: app.certDate || new Date().toISOString().split('T')[0],
+                            status: 'pending',
+                            data: app
+                        });
+                    }
+                });
+            }
+
+            // If no applications found, generate sample data for demo
+            if (applications.length === 0) {
+                applications = [
+                    {
+                        id: '#APP-2025-001',
+                        company: 'Mr. Food Station',
+                        certifier: 'Engr. Fatima Alonzo',
+                        dateSubmitted: '2025-01-15',
+                        status: 'pending',
+                        data: {
+                            companyName: 'Mr. Food Station',
+                            contactPerson: 'Jessa Rauf',
+                            address: 'Davao City, Philippines',
+                            contactNos: '09123456789',
+                            certifierName: 'Engr. Fatima Alonzo',
+                            documents: [
+                                { id: 1, name: 'Bus. Permit', status: 'Compliant', remarks: 'Valid and current' },
+                                { id: 2, name: 'License to Operate', status: 'Compliant', remarks: 'Verified' },
+                                { id: 3, name: 'Mayor\'s Permit', status: 'Compliant', remarks: 'All good' },
+                                { id: 4, name: 'Brgy. Permit', status: 'Non-Compliant', remarks: 'Expired - renewal required' },
+                                { id: 5, name: 'FDA CPR of the Products', status: 'Compliant', remarks: 'Submitted' }
+                            ]
+                        }
+                    },
+                    {
+                        id: '#APP-2025-002',
+                        company: 'Cafe De Armando',
+                        certifier: 'Engr. Fatima Alonzo',
+                        dateSubmitted: '2025-01-14',
+                        status: 'pending',
+                        data: {
+                            companyName: 'Cafe De Armando',
+                            contactPerson: 'Malik Ahsan',
+                            address: 'Tagum City, Davao del Norte',
+                            contactNos: '09987654321',
+                            certifierName: 'Engr. Fatima Alonzo',
+                            documents: []
+                        }
+                    }
+                ];
+            }
+
+            console.log("[v0] Loaded applications:", applications);
+            return applications;
+        }
+
+        // Render pending reviews dynamically
+        function renderPendingReviews() {
+            const tbody = document.getElementById('pendingReviewsBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            const pendingApps = applications.filter(app => app.status === 'pending');
+
+            if (pendingApps.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #666;">No pending applications</td></tr>';
+                return;
+            }
+
+            pendingApps.forEach(app => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${app.id}</td>
+                    <td>${app.company}</td>
+                    <td>${app.certifier}</td>
+                    <td>${app.dateSubmitted}</td>
+                    <td><span class="status-badge pending-verification">Pending</span></td>
+                    <td>
+                        <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;"
+                            onclick="loadVerificationData('${app.id}')">Review</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update dashboard statistics dynamically
+        function updateDashboardStats() {
+            const pending = applications.filter(app => app.status === 'pending').length;
+            const approved = applications.filter(app => app.status === 'approved').length;
+            const corrections = applications.filter(app => app.status === 'corrections').length;
+            const rejected = applications.filter(app => app.status === 'rejected').length;
+
+            const pendingEl = document.getElementById('pendingStatCount');
+            const approvedEl = document.getElementById('approvedStatCount');
+            const correctionEl = document.getElementById('correctionStatCount');
+            const rejectedEl = document.getElementById('rejectedStatCount');
+
+            if (pendingEl) pendingEl.textContent = pending;
+            if (approvedEl) approvedEl.textContent = approved;
+            if (correctionEl) correctionEl.textContent = corrections;
+            if (rejectedEl) rejectedEl.textContent = rejected;
+        }
+
+        // Updated initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            loadApplicationsFromCertifier();
+            updateDashboardStats();
+            renderPendingReviews();
+            renderVerificationTable();
+            updateSummary();
+
+            // Load saved verification if available
+            const saved = localStorage.getItem('auditVerification');
+            if (saved) {
+                const data = JSON.parse(saved);
+                verification = data;
+                displayCompanyDetails();
+                renderVerificationTable();
+                updateSummary();
+            }
+        });
+
+        function navigateToPage(page) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.getElementById(page + '-page').classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.querySelector(`[onclick*="'${page}'"]`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function displayCompanyDetails() {
+            const currentApp = applications.find(a => a.id === (verification.company.name ? 
+                applications.find(app => app.company === verification.company.name)?.id : null));
+            
+            if (currentApp) {
+                verification.company.currentAppId = currentApp.id;
+            }
+            
+            document.getElementById('companyDisplay').textContent = verification.company.name || '-';
+            document.getElementById('contactDisplay').textContent = verification.company.contact || '-';
+            document.getElementById('addressDisplay').textContent = verification.company.address || '-';
+            document.getElementById('certifierDisplay').textContent = verification.company.certifier || '-';
+            document.getElementById('certDateDisplay').textContent = verification.company.date || '-';
+        }
+
+        function renderVerificationTable() {
+            const tbody = document.getElementById('verificationBody');
+            tbody.innerHTML = '';
+
+            verification.documents.forEach(doc => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="doc-number">${doc.id}</td>
+                    <td class="doc-name">${doc.name}</td>
+                    <td>
+                        <span class="certifier-status ${doc.certifierStatus}">
+                            <i class="fas fa-${doc.certifierStatus === 'compliant' ? 'check-circle' : doc.certifierStatus === 'non-compliant' ? 'times-circle' : 'clock'}"></i>
+                            ${doc.certifierStatus.charAt(0).toUpperCase() + doc.certifierStatus.slice(1)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="certifier-remarks">${doc.certifierRemarks || '(No remarks)'}</div>
+                    </td>
+                    <td>
+                        <div class="verification-buttons">
+                            <button class="verify-btn ${doc.auditStatus === 'approved' ? 'approved' : ''}" 
+                                onclick="updateAuditStatus(${doc.id}, 'approved')" title="Approve">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="verify-btn ${doc.auditStatus === 'rejected' ? 'rejected' : ''}" 
+                                onclick="updateAuditStatus(${doc.id}, 'rejected')" title="Request Correction">
+                                <i class="fas fa-exclamation"></i> Correct
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="Notes..." class="detail-input" style="width: 100%; padding: 6px;"
+                            onchange="updateAuditNotes(${doc.id}, this.value)" value="${doc.auditNotes}">
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateAuditStatus(docId, status) {
+            const doc = verification.documents.find(d => d.id === docId);
+            if (doc) {
+                doc.auditStatus = status;
+                renderVerificationTable();
+                updateSummary();
+            }
+        }
+
+        function updateAuditNotes(docId, notes) {
+            const doc = verification.documents.find(d => d.id === docId);
+            if (doc) {
+                doc.auditNotes = notes;
+            }
+        }
+
+        function updateSummary() {
+            const total = verification.documents.length;
+            const certifierApproved = verification.documents.filter(d => d.certifierStatus === 'compliant').length;
+            const certifierRejected = verification.documents.filter(d => d.certifierStatus === 'non-compliant').length;
+            const auditVerified = verification.documents.filter(d => d.auditStatus !== 'pending').length;
+
+            document.getElementById('totalDocsCount').textContent = `${certifierApproved + certifierRejected}/${total}`;
+            document.getElementById('certifierApprovedCount').textContent = certifierApproved;
+            document.getElementById('certifierRejectedCount').textContent = certifierRejected;
+            document.getElementById('auditVerifyCount').textContent = auditVerified;
+
+            document.getElementById('pendingStatCount').textContent = verification.documents.filter(d => d.auditStatus === 'pending').length;
+            document.getElementById('approvedStatCount').textContent = verification.documents.filter(d => d.auditStatus === 'approved').length;
+            document.getElementById('correctionStatCount').textContent = verification.documents.filter(d => d.auditStatus === 'rejected').length;
+            document.getElementById('rejectedStatCount').textContent = verification.documents.filter(d => d.auditStatus === 'pending').length;
+        }
+
+        function clearAllVerifications() {
+            verification.documents.forEach(d => {
+                d.auditStatus = 'pending';
+                d.auditNotes = '';
+            });
+            renderVerificationTable();
+            updateSummary();
+            alert('All verifications cleared!');
+        }
+
+        function saveVerification() {
+            verification.auditMember = document.getElementById('auditMemberName').value;
+            localStorage.setItem('auditVerification', JSON.stringify(verification));
+            alert('Verification saved!');
+        }
+
+        function submitVerification() {
+            const auditMember = document.getElementById('auditMemberName').value;
+            if (!auditMember) {
+                alert('Please enter your name');
+                return;
+            }
+
+            const pending = verification.documents.filter(d => d.auditStatus === 'pending').length;
+            if (pending > 0) {
+                if (!confirm(`${pending} documents not yet verified. Submit anyway?`)) {
+                    return;
+                }
+            }
+
+            const appIndex = applications.findIndex(a => a.id === verification.company.currentAppId);
+            if (appIndex !== -1) {
+                applications[appIndex].status = 'verified';
+                localStorage.setItem('auditApplications', JSON.stringify(applications));
+            }
+
+            verification.auditMember = auditMember;
+            localStorage.setItem('auditVerification', JSON.stringify(verification));
+            
+            const refId = `AUDIT-${Date.now()}`;
+            alert('Verification submitted successfully! Reference ID: ' + refId);
+            console.log('[v0] Audit Verification submitted:', verification);
+            
+            // Refresh the pending reviews list
+            loadApplicationsFromCertifier();
+            updateDashboardStats();
+            renderPendingReviews();
+            navigateToPage('home');
+        }
+
+        function printVerification() {
+            window.print();
+        }
+
+        function loadVerificationData(appId) {
+            const app = applications.find(a => a.id === appId);
+            
+            if (!app) {
+                alert("Application not found");
+                return;
+            }
+            
+            const appData = app.data;
+            
+            verification.company = {
+                name: appData.companyName || 'N/A',
+                contact: appData.contactPerson || 'N/A',
+                address: appData.address || 'N/A',
+                certifier: appData.certifierName || 'N/A',
+                date: app.dateSubmitted,
+                currentAppId: app.id
+            };
+            
+            // Load document data from certifier submission
+            if (appData.documents && appData.documents.length > 0) {
+                verification.documents = documents.map((doc, idx) => {
+                    const certifierDoc = appData.documents.find(d => d.id === doc.id) || {};
+                    return {
+                        ...doc,
+                        certifierStatus: certifierDoc.status ? certifierDoc.status.toLowerCase() === 'compliant' ? 'compliant' : 'non-compliant' : 'pending',
+                        certifierRemarks: certifierDoc.remarks || '',
+                        auditStatus: 'pending',
+                        auditNotes: ''
+                    };
+                });
+            } else {
+                // Generate placeholder data with all documents
+                verification.documents = documents.map((doc, idx) => ({
+                    ...doc,
+                    certifierStatus: idx % 3 === 0 ? 'non-compliant' : 'compliant',
+                    certifierRemarks: idx % 3 === 0 ? 'Requires resubmission' : 'Verified and approved',
+                    auditStatus: 'pending',
+                    auditNotes: ''
+                }));
+            }
+            
+            displayCompanyDetails();
+            renderVerificationTable();
+            updateSummary();
+            navigateToPage('verification');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'login-type.html';
+            }
+        }
+    </script>
+</body>
+</html>

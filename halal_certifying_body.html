@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HDIP - Halal Certification System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #0d8c4c;
+            --light-green: #e7f9ef;
+            --secondary-green: #06c167;
+            --card-bg: #ffffff;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --border-radius: 8px;
+            --text-dark: #1a1a1a;
+            --text-muted: #666666;
+            --border-light: #e9ecef;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f1ed 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-top: 80px;
+            margin: 0;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-green) 0%, #0a6d3a 100%);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            border-bottom-color: white;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .homepage {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f1ed 100%);
+            padding: 40px 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-green) 0%, #0a6d3a 100%);
+            color: white;
+            padding: 60px 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-section h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary-green);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .recent-applications {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .recent-applications h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+        }
+
+        .applications-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .applications-table th {
+            background: var(--light-green);
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary-green);
+            border-bottom: 2px solid var(--secondary-green);
+        }
+
+        .applications-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .applications-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.reviewing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-badge.approved {
+            background: var(--light-green);
+            color: var(--primary-green);
+        }
+
+        .status-badge.rejected {
+            background: #ffe7e7;
+            color: #dc3545;
+        }
+
+        .audit-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-green);
+        }
+
+        .header-section h1 {
+            color: var(--primary-green);
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+
+        .header-section .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .company-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 13px;
+        }
+
+        .detail-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .detail-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(13, 140, 76, 0.1);
+        }
+
+        .checklist-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .checklist-card h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 25px 0;
+        }
+
+        .checklist-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .checklist-table thead {
+            background: var(--light-green);
+            border-bottom: 2px solid var(--secondary-green);
+        }
+
+        .checklist-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary-green);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .checklist-table tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background-color 0.2s;
+        }
+
+        .checklist-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .checklist-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .document-number {
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 13px;
+            width: 40px;
+        }
+
+        .document-name {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .doc-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .preview-badge-btn {
+            background-color: #999;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .preview-badge-btn:hover {
+            background-color: #666;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .conformity-cell {
+            width: 180px;
+        }
+
+        .conformity-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .conformity-btn {
+            padding: 6px 12px;
+            border: 2px solid var(--border-light);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        .conformity-btn:hover {
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .conformity-btn.approved {
+            background: var(--light-green);
+            border-color: var(--secondary-green);
+            color: var(--primary-green);
+        }
+
+        .conformity-btn.rejected {
+            background: #ffe7e7;
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .conformity-btn.pending {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .remarks-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 36px;
+        }
+
+        .remarks-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(13, 140, 76, 0.1);
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0a6d3a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 140, 76, 0.2);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary-green);
+            background: white;
+            color: var(--primary-green);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-green);
+        }
+
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: var(--light-green);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .summary-card .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .notes-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .notes-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+            color: var(--text-dark);
+        }
+
+        .notes-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(13, 140, 76, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+
+            .company-details {
+                grid-template-columns: 1fr;
+            }
+
+            .checklist-table {
+                font-size: 12px;
+            }
+
+            .checklist-table td,
+            .checklist-table th {
+                padding: 10px 8px;
+            }
+
+            .conformity-buttons {
+                flex-direction: column;
+            }
+
+            .conformity-btn {
+                padding: 8px 10px;
+            }
+
+            .conformity-cell {
+                width: auto;
+            }
+
+            .summary-section {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-section h1 {
+                font-size: 28px;
+            }
+
+            .hero-section p {
+                font-size: 16px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a class="navbar-brand" onclick="navigateToPage('home')">
+                <i class="fas fa-mosque"></i> HDIP
+            </a>
+            <ul class="nav-links">
+                <li><a onclick="navigateToPage('home')" class="nav-link active">Dashboard</a></li>
+                <li><a onclick="navigateToPage('inspection')" class="nav-link">Document Review</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Homepage -->
+    <div id="home-page" class="page active">
+        <div class="homepage">
+            <div class="hero-section">
+                <h1><i class="fas fa-certificate"></i> HDIP Certification System</h1>
+                <p>Halal Development Institute of the Philippines</p>
+                <p style="font-size: 16px; margin-bottom: 0;">Streamlined document verification and halal certification management</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="navigateToPage('inspection')"><i class="fas fa-clipboard-check"></i> Start New Review</button>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">47</div>
+                        <div class="stat-label">Total Applications</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Pending Review</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">28</div>
+                        <div class="stat-label">Approved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">7</div>
+                        <div class="stat-label">Rejected</div>
+                    </div>
+                </div>
+
+                <!-- Recent Applications -->
+                <div class="recent-applications">
+                    <h3><i class="fas fa-history"></i> Recent Applications</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="applications-table">
+                            <thead>
+                                <tr>
+                                    <th>Application ID</th>
+                                    <th>Company Name</th>
+                                    <th>Date Submitted</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#APP-2025-001</td>
+                                    <td>Mr. Food Station</td>
+                                    <td>2025-01-15</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>
+                                      <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;"
+                                        onclick="loadCompanyData('mrfood')">Review</button>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>#APP-2025-002</td>
+                                    <td>Cafe De Armando</td>
+                                    <td>2025-01-14</td>
+                                    <td><span class="status-badge reviewing">Reviewing</span></td>
+                                    <td>
+                                      <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;"
+                                        onclick="loadCompanyData('armando')">Review</button>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>#APP-2025-003</td>
+                                    <td>Brew It Cafe</td>
+                                    <td>2025-01-13</td>
+                                    <td><span class="status-badge approved">Approved</span></td>
+                                    <td>
+                                      <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>#APP-2025-004</td>
+                                    <td>Premium Meats Ltd.</td>
+                                    <td>2025-01-12</td>
+                                    <td><span class="status-badge rejected">Rejected</span></td>
+                                    <td>
+                                      <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+                                    </td>
+                                  </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inspection Form Page -->
+    <div id="inspection-page" class="page">
+        <div class="audit-container">
+            <!-- Header Section -->
+            <div class="header-section">
+                <h1><i class="fas fa-clipboard-check"></i> Audit Inspection Form</h1>
+                <p class="subtitle">HALAL DEVELOPMENT INSTITUTE OF THE PHILIPPINES (HDIP)</p>
+
+                <div class="company-details">
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Company</label>
+                            <input type="text" class="detail-input" id="companyName" placeholder="Enter company name">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Contact Person</label>
+                            <input type="text" class="detail-input" id="contactPerson" placeholder="Enter contact person">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Address</label>
+                            <input type="text" class="detail-input" id="address" placeholder="Enter address">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Contact No.</label>
+                            <input type="tel" class="detail-input" id="contactNo" placeholder="Enter contact number">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Date</label>
+                            <input type="date" class="detail-input" id="auditDate">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-row">
+                            <label class="detail-label">Certifier Name</label>
+                            <input type="text" class="detail-input" id="auditorName" placeholder="Enter certifier name">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="summary-section">
+                <div class="summary-card">
+                    <div class="label">Total Documents</div>
+                    <div class="value" id="totalCount">0/15</div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Compliant</div>
+                    <div class="value" id="conformCount" style="color: #06c167;">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Non-Compliant</div>
+                    <div class="value" id="nonconformCount" style="color: #dc3545;">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Pending Review</div>
+                    <div class="value" id="pendingCount" style="color: #856404;">0</div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <button class="btn btn-outline" onclick="clearAllStatus()"><i class="fas fa-redo"></i> Clear All</button>
+                <button class="btn btn-outline" onclick="markAllConforms()"><i class="fas fa-check-double"></i> Mark All Compliant</button>
+                <button class="btn btn-primary" onclick="submitInspection()"><i class="fas fa-paper-plane"></i> Submit Review</button>
+            </div>
+
+            <!-- Checklist Card -->
+            <div class="checklist-card">
+                <h2><i class="fas fa-list-check"></i> Document Checklist</h2>
+                <div style="overflow-x: auto;">
+                    <table class="checklist-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">No.</th>
+                                <th style="width: 40%">Documents to be Submitted</th>
+                                <th style="width: 35%">Conformity</th>
+                                <th style="width: 20%">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="checklistBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div class="notes-section">
+                <h3><i class="fas fa-sticky-note"></i> Certifier Notes & Findings</h3>
+                <textarea class="notes-textarea" id="auditorNotes" placeholder="Add any additional observations, findings, or recommendations from the document verification..."></textarea>
+                <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="saveInspection()"><i class="fas fa-save"></i> Save Review</button>
+                    <button class="btn btn-secondary" onclick="printReport()"><i class="fas fa-print"></i> Print Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Document checklist data
+        const documents = [
+            { id: 1, name: 'Bus. Permit' },
+            { id: 2, name: 'License to Operate' },
+            { id: 3, name: 'Mayor\'s Permit' },
+            { id: 4, name: 'Brgy. Permit' },
+            { id: 5, name: 'FDA CPR of the Products' },
+            { id: 6, name: 'DTI-License' },
+            { id: 7, name: 'Sanitary Permit' },
+            { id: 8, name: 'Fire Clearance Certificate' },
+            { id: 9, name: 'Environment Certificate - DENR' },
+            { id: 10, name: 'GMP, HACCP, ISO Certificate (if any)' },
+            { id: 11, name: 'Packaging Halal Certificate' },
+            { id: 12, name: 'Warehouse Halal Certificate' },
+            { id: 13, name: 'Matrix\'s of Raw mats' },
+            { id: 14, name: 'Halal Certificate of Raw mats' },
+            { id: 15, name: 'Submission of previous Halal Certificate from HDIP' }
+        ];
+
+        // State
+        let inspection = {
+            documents: documents.map(d => ({
+                ...d,
+                status: 'pending',
+                remarks: ''
+            }))
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderChecklist();
+            updateSummary();
+            setCurrentDate();
+
+            // Load saved inspection if available
+            const saved = localStorage.getItem('auditInspection');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('companyName').value = data.company;
+                document.getElementById('contactPerson').value = data.contact;
+                document.getElementById('address').value = data.address;
+                document.getElementById('contactNo').value = data.contactNo;
+                document.getElementById('auditDate').value = data.date;
+                document.getElementById('auditorName').value = data.auditor;
+                document.getElementById('auditorNotes').value = data.notes;
+                
+                inspection.documents = data.documents;
+                renderChecklist();
+                updateSummary();
+            }
+        });
+
+        function navigateToPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(page + '-page').classList.add('active');
+            
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.querySelector(`[onclick*="'${page}'"]`).classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+
+        function setCurrentDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('auditDate').value = today;
+        }
+
+        function renderChecklist() {
+            const tbody = document.getElementById('checklistBody');
+            tbody.innerHTML = '';
+
+            inspection.documents.forEach(doc => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="document-number">${doc.id}</td>
+                    <td class="document-name">${doc.name}</td>
+                    <td class="conformity-cell">
+                        <div class="conformity-buttons">
+                            <button class="conformity-btn ${doc.status === 'approved' ? 'approved' : ''}" 
+                                onclick="updateDocumentStatus(${doc.id}, 'approved')" title="Conforms">
+                                <i class="fas fa-check"></i> Compliant
+                            </button>
+                            <button class="conformity-btn ${doc.status === 'pending' ? 'pending' : ''}" 
+                                onclick="updateDocumentStatus(${doc.id}, 'pending')" title="Pending">
+                                <i class="fas fa-hourglass-half"></i> Pending
+                            </button>
+                            <button class="conformity-btn ${doc.status === 'rejected' ? 'rejected' : ''}" 
+                                onclick="updateDocumentStatus(${doc.id}, 'rejected')" title="Non-Conforms">
+                                <i class="fas fa-times"></i> Non-Compliant
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <textarea class="remarks-input" 
+                            onchange="updateRemarks(${doc.id}, this.value)"
+                            placeholder="Add remarks..." rows="2">${doc.remarks}</textarea>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateDocumentStatus(docId, status) {
+            const doc = inspection.documents.find(d => d.id === docId);
+            if (doc) {
+                doc.status = status;
+                renderChecklist();
+                updateSummary();
+            }
+        }
+
+        function updateRemarks(docId, remarks) {
+            const doc = inspection.documents.find(d => d.id === docId);
+            if (doc) {
+                doc.remarks = remarks;
+            }
+        }
+
+        function updateSummary() {
+            const total = inspection.documents.length;
+            const conforms = inspection.documents.filter(d => d.status === 'approved').length;
+            const nonconforms = inspection.documents.filter(d => d.status === 'rejected').length;
+            const pending = inspection.documents.filter(d => d.status === 'pending').length;
+
+            document.getElementById('totalCount').textContent = `${total - pending}/${total}`;
+            document.getElementById('conformCount').textContent = conforms;
+            document.getElementById('nonconformCount').textContent = nonconforms;
+            document.getElementById('pendingCount').textContent = pending;
+        }
+
+        function clearAllStatus() {
+            inspection.documents.forEach(d => {
+                d.status = 'pending';
+                d.remarks = '';
+            });
+            renderChecklist();
+            updateSummary();
+            alert('All statuses cleared!');
+        }
+
+        function markAllConforms() {
+            inspection.documents.forEach(d => {
+                d.status = 'approved';
+            });
+            renderChecklist();
+            updateSummary();
+            alert('All documents marked as Compliant!');
+        }
+
+        function submitInspection() {
+            const companyName = document.getElementById('companyName').value;
+            const auditorName = document.getElementById('auditorName').value;
+
+            if (!companyName || !auditorName) {
+                alert('Please fill in Company Name and Certifier Name');
+                return;
+            }
+
+            const pending = inspection.documents.filter(d => d.status === 'pending').length;
+            if (pending > 0) {
+                if (!confirm(`${pending} documents are still pending. Submit anyway?`)) {
+                    return;
+                }
+            }
+
+            alert('Document verification submitted successfully! Reference ID: ' + Date.now());
+            console.log('Inspection Data:', {
+                company: companyName,
+                contact: document.getElementById('contactPerson').value,
+                address: document.getElementById('address').value,
+                contactNo: document.getElementById('contactNo').value,
+                date: document.getElementById('auditDate').value,
+                certifier: auditorName,
+                documents: inspection.documents,
+                notes: document.getElementById('auditorNotes').value
+            });
+        }
+
+        function saveInspection() {
+            const data = {
+                company: document.getElementById('companyName').value,
+                contact: document.getElementById('contactPerson').value,
+                address: document.getElementById('address').value,
+                contactNo: document.getElementById('contactNo').value,
+                date: document.getElementById('auditDate').value,
+                auditor: document.getElementById('auditorName').value,
+                documents: inspection.documents,
+                notes: document.getElementById('auditorNotes').value
+            };
+
+            localStorage.setItem('auditInspection', JSON.stringify(data));
+            alert('Document verification saved!');
+        }
+
+        function printReport() {
+            window.print();
+        }
+        function loadCompanyData(companyId) {
+    let data = {};
+
+    switch (companyId) {
+      case 'mrfood':
+        data = {
+          company: "Mr. Food Station",
+          contact: "Jessa Rauf",
+          address: "Davao City, Philippines",
+          contactNo: "0917-456-8921",
+          date: "2025-11-04",
+          auditor: "Engr. Fatima Alonzo"
+        };
+        break;
+
+      case 'armando':
+        data = {
+          company: "Cafe De Armando",
+          contact: "Malik Ahsan",
+          address: "Tagum City, Davao del Norte",
+          contactNo: "0908-223-5514",
+          date: "2025-11-04",
+          auditor: "Engr. Fatima Alonzo"
+        };
+        break;
+
+      default:
+        alert("No data found for this company.");
+        return;
+    }
+
+    // Fill form fields
+    document.getElementById('companyName').value = data.company;
+    document.getElementById('contactPerson').value = data.contact;
+    document.getElementById('address').value = data.address;
+    document.getElementById('contactNo').value = data.contactNo;
+    document.getElementById('auditDate').value = data.date;
+    document.getElementById('auditorName').value = data.auditor;
+
+    // Navigate to inspection page
+    navigateToPage('inspection');
+  }
+    </script>
+</body>
+</html>
