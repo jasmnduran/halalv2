@@ -233,7 +233,7 @@
                     <h2 class="h5 fw-bold text-dark mb-2">Quick Actions</h2>
                     <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#addPromoModal">Add Menu</button>
                     <a href="#" class="btn btn-primary">Respond to Review</a> <!-- TODO: Update link -->
-                    <a href="halal_certification_application.php" class="btn btn-warning">Halal Certification</a> <!-- TODO: Update link -->
+                    <a href="applicant.html" class="btn btn-warning">Halal Certification</a> <!-- TODO: Update link -->
                      <a href="certification_progress.php<?php
                         if (isset($_GET['id'])) { echo '?id=' . htmlspecialchars($_GET['id']); }
                         else if (isset($_SESSION) && isset($_SESSION['last_application_id'])) { echo '?id=' . (int)$_SESSION['last_application_id']; }
