@@ -3,306 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Halal Keeps</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Business Owner Login - Halal Keeps</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --primary-green: #0d8c4c;
-      --secondary-green: #16a765;
-      --light-green: #e8f5e9;
-      --card-bg: #ffffff;
-      --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-      --shadow-hover: 0 15px 50px rgba(0, 0, 0, 0.12);
-      --border-radius: 15px;
-      --gray: #555;
-      --input-border: #ddd;
+      --bs-body-bg: #f5f7fa;
+      --bs-font-sans-serif: 'Inter', sans-serif;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 480px;
-      width: 100%;
-    }
-
-    .logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      box-shadow: 0 5px 20px rgba(13, 140, 76, 0.3);
-      border: 3px solid var(--primary-green);
-      object-fit: cover;
-      display: block;
-      margin: 0 auto 25px;
-      animation: fadeInDown 0.6s ease;
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      text-align: center;
-      margin-bottom: 10px;
-      animation: fadeInDown 0.6s ease 0.1s both;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: var(--gray);
-      font-size: 1.05rem;
-      margin-bottom: 30px;
-      animation: fadeInDown 0.6s ease 0.2s both;
     }
 
     .login-card {
-      background: var(--card-bg);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      padding: 40px;
-      border-top: 4px solid var(--primary-green);
-      animation: fadeInUp 0.6s ease 0.3s both;
+        background: white;
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        border-top: 5px solid var(--primary-green);
+        width: 100%;
+        max-width: 450px;
+    }
+    
+    .btn-login {
+        background: var(--primary-green);
+        border: none;
+        color: white;
+        padding: 12px;
+        font-weight: 600;
+        box-shadow: 0 4px 10px rgba(13, 140, 76, 0.2);
+    }
+    .btn-login:hover {
+        background: #0a6d3a;
+        color: white;
+        transform: translateY(-2px);
     }
 
-    .login-card h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--primary-green);
-      text-align: center;
-      margin-bottom: 30px;
+    .form-floating:focus-within {
+        border-color: var(--primary-green);
     }
-
-    .form-group {
-      margin-bottom: 25px;
-    }
-
-    label {
-      display: block;
-      color: #333;
-      font-weight: 600;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-
-    .input-wrapper {
-      position: relative;
-    }
-
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 14px 18px;
-      border: 2px solid var(--input-border);
-      border-radius: 10px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: #fafafa;
-    }
-
-    input[type="email"]:focus,
-    input[type="password"]:focus {
-      outline: none;
-      border-color: var(--primary-green);
-      background: white;
-      box-shadow: 0 0 0 3px rgba(13, 140, 76, 0.1);
-    }
-
-    input::placeholder {
-      color: #999;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--gray);
-      cursor: pointer;
-      font-size: 1.2rem;
-      padding: 5px;
-      transition: color 0.3s ease;
-    }
-
-    .password-toggle:hover {
-      color: var(--primary-green);
-    }
-
-    .submit-btn {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(13, 140, 76, 0.3);
-      margin-top: 10px;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(13, 140, 76, 0.4);
-    }
-
-    .submit-btn:active {
-      transform: translateY(0);
-    }
-
-    .link {
-      color: var(--primary-green);
-      text-decoration: none;
-      font-weight: 600;
-      position: relative;
-      transition: color 0.3s ease;
-    }
-
-    .link::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary-green);
-      transition: width 0.3s ease;
-    }
-
-    .link:hover {
-      color: var(--secondary-green);
-    }
-
-    .link:hover::after {
-      width: 100%;
-    }
-
-    .forgot-password {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 0.95rem;
-    }
-
-    .register-section {
-      text-align: center;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #e0e0e0;
-      color: var(--gray);
-      font-size: 0.95rem;
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin: 25px 0;
-      color: var(--gray);
-      font-size: 0.9rem;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .divider span {
-      padding: 0 15px;
-    }
-
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 576px) {
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      .login-card {
-        padding: 30px 25px;
-      }
-
-      .login-card h2 {
-        font-size: 1.5rem;
-      }
+    .form-control:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 0.25rem rgba(13, 140, 76, 0.15);
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <img src="logo.jpg" alt="Halal Keeps Logo" class="logo">
-    <h1>Welcome to Halal Keeps</h1>
-    <p class="subtitle">Your trusted platform for verified halal businesses</p>
+<body class="p-4">
+
+  <div class="login-card p-4 p-md-5">
     
-    <div class="login-card">
-      <h2>Sign In</h2>
-      <form action="actions/login.php" method="post">
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="password">Password</label>
-          <div class="input-wrapper">
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            <button type="button" class="password-toggle" onclick="togglePassword()">
-              <span id="toggleIcon">👁️</span>
-            </button>
-          </div>
-        </div>
-        
-        <button type="submit" class="submit-btn">Sign in</button>
-      </form>
-      
-      <div class="forgot-password">
-        <a href="#" class="link">Forgot Password?</a>
-      </div>
-      
-      <div class="register-section">
-        Don't have an account? <a href="registertype.php" class="link">Create New Account</a>
-      </div>
+    <div class="text-center mb-4">
+        <img src="logo.jpg" alt="Logo" class="rounded-circle border border-3 border-success mb-3" width="80" height="80">
+        <h2 class="fw-bold text-dark">Welcome Back</h2>
+        <p class="text-muted">Sign in to manage your business</p>
     </div>
+
+    <form action="actions/login.php" method="post">
+        
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+            <label for="email">Email Address</label>
+        </div>
+        
+        <div class="input-group mb-4">
+            <div class="form-floating flex-grow-1">
+                <input type="password" class="form-control border-end-0 rounded-0 rounded-start" id="password" name="password" placeholder="Password" required>
+                <label for="password">Password</label>
+            </div>
+            <button class="btn btn-outline-secondary border-start-0" type="button" onclick="togglePassword()">
+                <i class="bi bi-eye" id="toggleIcon"></i>
+            </button>
+        </div>
+        
+        <div class="d-grid mb-4">
+            <button type="submit" class="btn btn-login rounded-3">Sign In</button>
+        </div>
+
+        <div class="text-center">
+            <a href="#" class="text-decoration-none text-muted small mb-3 d-block">Forgot Password?</a>
+            <hr class="opacity-10 my-3">
+            <p class="small text-muted mb-0">
+                Don't have an account? 
+                <a href="registertype.php" class="text-success fw-bold text-decoration-none">Register</a>
+            </p>
+        </div>
+    </form>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function togglePassword() {
       const passwordInput = document.getElementById('password');
@@ -310,10 +106,12 @@
       
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        toggleIcon.textContent = '🙈';
+        toggleIcon.classList.remove('bi-eye');
+        toggleIcon.classList.add('bi-eye-slash');
       } else {
         passwordInput.type = 'password';
-        toggleIcon.textContent = '👁️';
+        toggleIcon.classList.remove('bi-eye-slash');
+        toggleIcon.classList.add('bi-eye');
       }
     }
   </script>

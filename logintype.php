@@ -4,277 +4,124 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Choose Account Type | Halal Keeps</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --primary-green: #0d8c4c;
       --secondary-green: #16a765;
-      --light-green: #e8f5e9;
-      --card-bg: #ffffff;
-      --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-      --shadow-hover: 0 15px 50px rgba(0, 0, 0, 0.12);
-      --border-radius: 15px;
-      --gray: #555;
+      --bs-body-bg: #f5f7fa;
+      --bs-font-sans-serif: 'Inter', sans-serif;
     }
-
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      padding: 40px 20px;
-    }
-
-    .container {
-      max-width: 900px;
-    }
-
-    .logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      box-shadow: 0 5px 20px rgba(13, 140, 76, 0.3);
-      border: 3px solid var(--primary-green);
-      object-fit: cover;
-      display: block;
-      margin: 0 auto;
-      animation: fadeInDown 0.6s ease;
-      background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-      display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
-      color: white;
-      font-size: 2rem;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      animation: fadeInDown 0.6s ease 0.1s both;
-    }
-
-    .subtitle {
-      color: var(--gray);
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-      animation: fadeInDown 0.6s ease 0.2s both;
     }
 
     .type-card {
-      background: var(--card-bg);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      padding: 40px 30px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      border: 2px solid transparent;
-      height: 100%;
-      position: relative;
-      overflow: hidden;
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+        background: white;
+        position: relative;
+        overflow: hidden;
     }
-
-    .type-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary-green), var(--secondary-green));
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-
+    
     .type-card:hover {
-      box-shadow: var(--shadow-hover);
-      transform: translateY(-8px);
-      border-color: var(--primary-green);
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(13, 140, 76, 0.15);
+        border: 1px solid var(--primary-green);
     }
 
-    .type-card:hover::before {
-      transform: scaleX(1);
+    .type-card:hover .icon-wrapper {
+        background: var(--primary-green);
+        color: white;
+        transform: scale(1.1);
     }
 
-    .type-card:active {
-      transform: translateY(-5px);
-    }
-
-    .type-icon {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      margin: 0 auto 20px;
-      box-shadow: 0 8px 25px rgba(13, 140, 76, 0.25);
-      transition: all 0.3s ease;
-      color: white;
-    }
-
-    .type-card:hover .type-icon {
-      transform: scale(1.1) rotate(5deg);
-      box-shadow: 0 12px 35px rgba(13, 140, 76, 0.35);
-    }
-
-    .type-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary-green);
-      margin-bottom: 12px;
-    }
-
-    .type-desc {
-      color: var(--gray);
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
-
-    .register-section {
-      background: var(--card-bg);
-      padding: 25px;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      animation: fadeInUp 0.6s ease 0.5s both;
-    }
-
-    .link {
-      color: var(--primary-green);
-      text-decoration: none;
-      font-weight: 600;
-      position: relative;
-      transition: color 0.3s ease;
-    }
-
-    .link::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary-green);
-      transition: width 0.3s ease;
-    }
-
-    .link:hover {
-      color: var(--secondary-green);
-    }
-
-    .link:hover::after {
-      width: 100%;
-    }
-
-    .card-container {
-      animation: fadeInUp 0.6s ease 0.3s both;
-    }
-
-    a {
-      text-decoration: none;
-    }
-
-    .row {
-      margin-bottom: 2rem;
-    }
-
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 768px) {
-      h1 {
+    .icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background: rgba(13, 140, 76, 0.1);
+        color: var(--primary-green);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 2rem;
-      }
+        margin: 0 auto 1.5rem;
+        transition: all 0.3s ease;
+    }
 
-      .type-card {
-        padding: 30px 20px;
-        margin-bottom: 20px;
-      }
-
-      .type-icon {
-        width: 70px;
-        height: 70px;
-        font-size: 2rem;
-      }
-
-      .type-title {
-        font-size: 1.3rem;
-      }
-
-      .subtitle {
-        font-size: 1rem;
-      }
+    .logo-glow {
+        box-shadow: 0 0 20px rgba(13, 140, 76, 0.2);
     }
   </style>
 </head>
-<body>
+<body class="py-5">
   <div class="container">
-    <div class="logo mb-4"><img src="logo.jpg" alt="Halal Keeps Logo" class="logo"></div>
-    <h1 class="text-center mb-3">Sign In to Halal Keeps</h1>
-    <p class="text-center subtitle">Choose your account type to log in</p>
     
-    <div class="row justify-content-center card-container">
-      <div class="col-12 col-md-6 mb-4">
-        <a href="login_owner.php">
-          <div class="type-card text-center">
-            <div class="type-icon"><i class="fas fa-store"></i></div>
-            <div class="type-title">Business Owner</div>
-            <div class="type-desc">Access your business dashboard and manage your profile</div>
-          </div>
+    <div class="text-center mb-5">
+        <img src="logo.jpg" alt="Logo" class="rounded-circle border border-3 border-success mb-4 logo-glow" width="90" height="90">
+        <h1 class="fw-bold text-dark mb-2">Sign In to Halal Keeps</h1>
+        <p class="text-muted lead fs-6">Select your account type to continue</p>
+    </div>
+
+    <div class="row justify-content-center g-4 mb-5">
+      <div class="col-md-4 col-lg-3">
+        <a href="login_owner.php" class="card type-card p-4 text-center">
+            <div class="card-body">
+                <div class="icon-wrapper">
+                    <i class="bi bi-shop"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Business Owner</h4>
+                <p class="text-muted small mb-0">Manage your business profile, analytics, and certifications.</p>
+            </div>
         </a>
       </div>
       
-      <div class="col-12 col-md-6 mb-4">
-        <a href="login_customer.php">
-          <div class="type-card text-center">
-            <div class="type-icon"><i class="fas fa-user"></i></div>
-            <div class="type-title">Customer</div>
-            <div class="type-desc">Find halal restaurants, leave reviews, and save favorites</div>
-          </div>
+      <div class="col-md-4 col-lg-3">
+        <a href="login_customer.php" class="card type-card p-4 text-center">
+            <div class="card-body">
+                <div class="icon-wrapper">
+                    <i class="bi bi-person-heart"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Customer</h4>
+                <p class="text-muted small mb-0">Discover Halal food, leave reviews, and save favorites.</p>
+            </div>
         </a>
       </div>
 
-      <div class="col-12 col-md-6 mb-4">
-        <a href="login_certifier.html">
-          <div class="type-card text-center">
-            <div class="type-icon"><i class="fas fa-certificate"></i></div>
-            <div class="type-title">Halal Certifying Body</div>
-            <div class="type-desc">Verify documents and issue halal certifications to businesses</div>
-          </div>
+      <div class="col-md-4 col-lg-3">
+        <a href="login_certifier.html" class="card type-card p-4 text-center">
+            <div class="card-body">
+                <div class="icon-wrapper">
+                    <i class="bi bi-patch-check-fill"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Certifying Body</h4>
+                <p class="text-muted small mb-0">Review applications and verify business documents.</p>
+            </div>
         </a>
       </div>
     </div>
     
-    <div class="register-section text-center">
-      <span style="color: var(--gray); font-size: 1.05rem;">Don't have an account?</span> 
-      <a href="registertype.php" class="link">Register here</a>
+    <div class="text-center">
+      <p class="text-muted mb-0">Don't have an account yet?</p>
+      <a href="registertype.php" class="text-success fw-bold text-decoration-none">Create New Account</a>
     </div>
+
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

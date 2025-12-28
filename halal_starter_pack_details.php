@@ -7,134 +7,138 @@ session_start();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Halal Starter Pack Details - Halal Keeps</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    .details-card {
-      background: var(--card-bg);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      padding: 30px;
-      margin-bottom: 25px;
-      border-top: 4px solid var(--primary-green);
-      transition: all 0.3s ease;
-      animation: fadeInUp 0.6s ease 0.3s both;
+    :root {
+      --primary-green: #0d8c4c;
+      --secondary-green: #16a765;
+      --light-green: #e8f5e9;
+      --bs-body-bg: #f5fcf7;
+      --bs-font-sans-serif: 'Inter', sans-serif;
+    }
+    body { background-color: var(--bs-body-bg); }
+
+    .details-container { max-width: 800px; margin: 0 auto; }
+
+    .hero-card {
+        background: linear-gradient(135deg, var(--primary-green), #0a6d3a);
+        color: white;
+        border-radius: 1rem;
+        box-shadow: 0 8px 20px rgba(13, 140, 76, 0.2);
     }
 
-    .details-card:hover {
-      box-shadow: var(--shadow-hover);
-      transform: translateY(-3px);
+    .content-card {
+        background: white;
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border-left: 6px solid var(--primary-green);
     }
 
-    .details-card h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary-green);
-      margin-bottom: 20px;
-      text-align: center;
+    .feature-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--light-green);
+        color: var(--primary-green);
+        border-radius: 50%;
+        margin-right: 12px;
     }
-
-    .details-card h3 {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--primary-green);
-      margin-bottom: 15px;
-    }
-
-    .details-card p {
-      color: #333;
-      line-height: 1.7;
-      margin-bottom: 15px;
-    }
-
-    .details-card ul {
-      color: #333;
-      line-height: 1.7;
-      padding-left: 20px;
-    }
-
-    .details-card li {
-      margin-bottom: 8px;
-    }
-
-    @media (max-width: 768px) {
-      .details-card {
-        padding: 25px 20px;
-      }
-
-      .details-card h2, .details-card h3 {
-        font-size: 1.3rem;
-      }
-    }
-  </style>
-  <style>
-    .starter-details-card { background: #fff; border-left: 6px solid #219653; box-shadow: 0 2px 16px rgba(44,62,80,0.13); border-radius: 24px; padding: 36px 32px 32px 32px; max-width: 700px; margin: 0 auto 32px auto; }
-    .starter-green-card { background:#219653; color:#fff; border-radius:18px; margin-bottom:28px; box-shadow:0 2px 8px rgba(44,62,80,0.08); }
-    .starter-list { margin-left: 0; padding-left: 0; }
-    .starter-list li { display:flex; align-items:center; margin-bottom:14px; font-size:1.09em; }
-    .starter-list li span.icon { color:#2563eb; font-size:1.3em; margin-right:12px; }
-    .inside-card { background:#f5fcf7; border-radius:18px; box-shadow:0 1px 6px rgba(44,62,80,0.06); padding:20px 18px; }
-    .details-title { color:#219653; font-size:1.4em; font-weight:800; margin-bottom:4px; }
-    .details-sub { color:#4b5563; font-size:1.08em; margin-bottom:18px; }
-    .back-link { text-decoration:none; color:#219653; font-size:2rem; margin-right:18px; transition:color 0.2s; }
-    .back-link:hover { color:#17643a; }
   </style>
 </head>
-<body>
-  <div class="container">
-    <img src="logo.jpg" alt="Halal Keeps Logo" class="logo mb-2 mt-3" style="display:block;margin-left:auto;margin-right:auto;">
-    <div class="starter-details-card">
-      <div class="d-flex align-items-center mb-4">
-        <a href="halal_starter_pack.php" class="back-link">&#8592;</a>
-        <span class="details-title mb-0">Halal Starter Pack</span>
-      </div>
-      <div class="starter-green-card card mb-4">
-        <div class="text-center p-4">
-          <div style="font-size:2.7em; background:#fff; color:#219653; border-radius:50%; width:54px; height:54px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:8px;">&#128218;</div>
-          <div class="fs-4 fw-bold">Halal Starter Pack</div>
-          <div>For businesses in non-Muslim majority areas</div>
-        </div>
-      </div>
-      <div class="details-sub text-center">This comprehensive guide helps businesses implement basic halal practices even before pursuing full certification. Perfect for restaurants, cafes, and food suppliers in areas with low Muslim populations.</div>
-      <ul class="starter-list mb-4">
-        <li><span class="icon">&#10003;</span>Easy-to-implement guidelines</li>
-        <li><span class="icon">&#10003;</span>Ingredient sourcing recommendations</li>
-        <li><span class="icon">&#10003;</span>Kitchen setup to avoid cross-contamination</li>
-        <li><span class="icon">&#10003;</span>Staff training materials</li>
-        <li><span class="icon">&#10003;</span>Path to full certification</li>
-      </ul>
-      <div class="inside-card">
-        <div class="fw-bold mb-2">What's Inside</div>
-        <ul style="margin-bottom:0;">
-          <li><a href="halal_guidelines.php" class="link">Basic Halal Guidelines</a> <span class="text-muted small">- Fundamental principles of halal food preparation and handling.</span></li>
-          <li class="mt-2"><span class="fw-semibold">Halal-Friendly Designation</span> <span class="text-muted small">- How to use and display the "Halal-Friendly" badge for your business.</span></li>
-          <li class="mt-2"><span class="fw-semibold">Implementation Timeline</span> <span class="text-muted small">- Steps and timeline for adopting halal practices.</span></li>
-        </ul>
-      </div>
+<body class="py-4">
+  <div class="container details-container">
+    
+    <div class="mb-4">
+        <a href="halal_starter_pack.php" class="btn btn-outline-success btn-sm rounded-pill px-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Overview
+        </a>
     </div>
+
+    <div class="text-center mb-4">
+        <img src="logo.jpg" alt="Logo" class="rounded-circle border mb-3" width="72" height="72">
+    </div>
+
+    <div class="hero-card p-4 p-md-5 text-center mb-4">
+        <div class="bg-white text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 64px; height: 64px;">
+            <i class="bi bi-book-half fs-2"></i>
+        </div>
+        <h1 class="fw-bold mb-2">Halal Starter Pack</h1>
+        <p class="lead mb-0 opacity-90">For businesses in non-Muslim majority areas</p>
+    </div>
+
+    <div class="content-card p-4 mb-4">
+        <p class="text-muted lead fs-6 mb-4">
+            This comprehensive guide helps businesses implement basic halal practices even before pursuing full certification. 
+            Perfect for restaurants, cafes, and food suppliers in areas with low Muslim populations.
+        </p>
+        
+        <h5 class="fw-bold text-dark mb-3">What You Get</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center p-3 bg-light rounded-3 h-100">
+                    <span class="feature-icon"><i class="bi bi-check-lg"></i></span>
+                    <span>Easy-to-implement guidelines</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex align-items-center p-3 bg-light rounded-3 h-100">
+                    <span class="feature-icon"><i class="bi bi-check-lg"></i></span>
+                    <span>Ingredient sourcing recommendations</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex align-items-center p-3 bg-light rounded-3 h-100">
+                    <span class="feature-icon"><i class="bi bi-check-lg"></i></span>
+                    <span>Kitchen setup protocols</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex align-items-center p-3 bg-light rounded-3 h-100">
+                    <span class="feature-icon"><i class="bi bi-check-lg"></i></span>
+                    <span>Staff training materials</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-success bg-opacity-10 border-0 rounded-4">
+            <div class="card-body p-4">
+                <h5 class="fw-bold text-success mb-3"><i class="bi bi-folder2-open me-2"></i>What's Inside</h5>
+                <div class="list-group list-group-flush bg-transparent">
+                    <a href="halal_guidelines.php" class="list-group-item bg-transparent border-success border-opacity-25 px-0 d-flex flex-column flex-sm-row align-items-start gap-2">
+                        <i class="bi bi-file-earmark-text text-success mt-1"></i>
+                        <div>
+                            <span class="fw-bold text-dark text-decoration-underline">Basic Halal Guidelines</span>
+                            <p class="small text-muted mb-0">Fundamental principles of halal food preparation and handling.</p>
+                        </div>
+                    </a>
+                    <div class="list-group-item bg-transparent border-success border-opacity-25 px-0 d-flex flex-column flex-sm-row align-items-start gap-2">
+                        <i class="bi bi-award text-success mt-1"></i>
+                        <div>
+                            <span class="fw-bold text-dark">Halal-Friendly Designation</span>
+                            <p class="small text-muted mb-0">How to use and display the "Halal-Friendly" badge for your business.</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item bg-transparent border-0 px-0 d-flex flex-column flex-sm-row align-items-start gap-2">
+                        <i class="bi bi-calendar-check text-success mt-1"></i>
+                        <div>
+                            <span class="fw-bold text-dark">Implementation Timeline</span>
+                            <p class="small text-muted mb-0">Steps and timeline for adopting halal practices.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
   </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // jQuery Mobile initialization
-  $(document).ready(function() {
-    // Initialize jQuery Mobile
-    $.mobile.initializePage();
-    
-    // Enhanced mobile interactions
-    $('.btn, button').on('touchstart', function() {
-      $(this).addClass('ui-btn-active');
-    }).on('touchend', function() {
-      $(this).removeClass('ui-btn-active');
-    });
-    
-    // Mobile-friendly navigation
-    $('a').on('click', function() {
-      $.mobile.showPageLoadingMsg();
-    });
-  });
-</script>
-</html> 
+</html>
