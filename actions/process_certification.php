@@ -1,142 +1,108 @@
 <?php
+require_once "../includes/db.php";
 session_start();
-include '../includes/db.php';
 
-// Check if form was submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        // Get form data
-        $applicant_name = $_POST['applicant_name'] ?? '';
-        $company_name = $_POST['company_name'] ?? '';
-        $business_address = $_POST['business_address'] ?? '';
-        $mailing_address = $_POST['mailing_address'] ?? '';
-        $ownership_type = $_POST['ownership_type'] ?? '';
-        $contact_person = $_POST['contact_person'] ?? '';
-        $telephone = $_POST['telephone'] ?? '';
-        $email = $_POST['email'] ?? '';
-        $application_type = $_POST['application_type'] ?? '';
-        $certification_type = $_POST['certification_type'] ?? '';
-        $halal_seminar_date = $_POST['halal_seminar_date'] ?? '';
-        $first_audit_date = $_POST['first_audit_date'] ?? '';
-        $final_audit_date = $_POST['final_audit_date'] ?? '';
-        $undertaking_agreement = isset($_POST['undertaking_agreement']) ? 1 : 0;
-        $signature = $_POST['signature'] ?? '';
-        $application_date = $_POST['application_date'] ?? '';
+header('Content-Type: application/json');
 
-        // Validate required fields
-        $required_fields = [
-            'applicant_name', 'company_name', 'business_address', 'ownership_type',
-            'contact_person', 'telephone', 'email', 'application_type', 'certification_type',
-            'halal_seminar_date', 'first_audit_date', 'final_audit_date', 'signature', 'application_date'
-        ];
-
-        $missing_fields = [];
-        foreach ($required_fields as $field) {
-            if (empty($_POST[$field])) {
-                $missing_fields[] = $field;
-            }
-        }
-
-        if (!empty($missing_fields)) {
-            throw new Exception('Please fill in all required fields: ' . implode(', ', $missing_fields));
-        }
-
-        if (!$undertaking_agreement) {
-            throw new Exception('You must agree to the undertaking terms.');
-        }
-
-        // Handle file uploads
-        $uploaded_documents = [];
-        $upload_dir = '../uploads/certification_documents/';
-        
-        // Create upload directory if it doesn't exist
-        if (!file_exists($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-
-        // Process uploaded files
-        foreach ($_FILES as $key => $file) {
-            if ($file['error'] === UPLOAD_ERR_OK) {
-                $filename = $file['name'];
-                $temp_name = $file['tmp_name'];
-                $upload_path = $upload_dir . time() . '_' . $filename;
-                
-                if (move_uploaded_file($temp_name, $upload_path)) {
-                    $uploaded_documents[$key] = $upload_path;
-                }
-            }
-        }
-
-        // Insert application into database
-        $stmt = $conn->prepare("
-            INSERT INTO halal_certification_applications (
-                applicant_name, company_name, business_address, mailing_address,
-                ownership_type, contact_person, telephone, email, application_type,
-                certification_type, halal_seminar_date, first_audit_date, final_audit_date,
-                undertaking_agreement, signature, application_date, status, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
-        ");
-
-        // ✅ Added error checking
-        if (!$stmt) {
-            die("Prepare failed: " . $conn->error);
-        }
-
-        // ✅ Corrected type string ("i" for integer undertaking_agreement)
-        $stmt->bind_param("ssssssssssssisss",
-            $applicant_name, $company_name, $business_address, $mailing_address,
-            $ownership_type, $contact_person, $telephone, $email, $application_type,
-            $certification_type, $halal_seminar_date, $first_audit_date, $final_audit_date,
-            $undertaking_agreement, $signature, $application_date
-        );
-
-        if ($stmt->execute()) {
-            $application_id = $conn->insert_id;
-            
-            // Store uploaded documents information
-            if (!empty($uploaded_documents)) {
-                foreach ($uploaded_documents as $doc_key => $doc_path) {
-                    $doc_stmt = $conn->prepare("
-                        INSERT INTO application_documents (application_id, document_type, file_path, uploaded_at)
-                        VALUES (?, ?, ?, NOW())
-                    ");
-                    if (!$doc_stmt) {
-                        die("Document insert prepare failed: " . $conn->error);
-                    }
-                    $doc_stmt->bind_param("iss", $application_id, $doc_key, $doc_path);
-                    $doc_stmt->execute();
-                    $doc_stmt->close();
-                }
-            }
-
-            // Send confirmation email (optional)
-            $subject = "Halal Certification Application Received";
-            $message = "Dear $applicant_name,\n\n";
-            $message .= "Your halal certification application has been received successfully.\n";
-            $message .= "Application ID: #$application_id\n";
-            $message .= "We will review your application and contact you within 5-7 business days.\n\n";
-            $message .= "Thank you for choosing Halal Keeps!\n\n";
-            $message .= "Best regards,\nHalal Keeps Team";
-
-            // mail($email, $subject, $message);
-
-            // Remember last submitted application in the session
-            $_SESSION['last_application_id'] = $application_id;
-
-            // Redirect back to owner dashboard with success modal
-            header('Location: ../owner_dashboard.php?submitted=1&id=' . $application_id);
-            exit;
-        } else {
-            throw new Exception('Failed to save application. Please try again.');
-        }
-
-    } catch (Exception $e) {
-        $error_message = $e->getMessage();
-        header('Location: ../halal_certification_application.php?error=' . urlencode($error_message));
-        exit;
-    }
-} else {
-    header('Location: ../halal_certification_application.php');
+// 1. Basic Validation
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    echo json_encode(["success" => false, "message" => "Invalid request method."]);
     exit;
 }
+
+try {
+    $conn->begin_transaction();
+
+    // Prepare variables (Sanitization happens via bind_param)
+    $undertaking = isset($_POST['undertaking_agreement']) ? 1 : 0;
+    
+    // 2. Insert Main Application (COMPLETE QUERY)
+    $sql = "INSERT INTO halal_certification_applications 
+        (
+            applicant_name, company_name, business_address, mailing_address, 
+            ownership_type, contact_person, telephone, email, 
+            application_type, certification_type, 
+            halal_seminar_date, first_audit_date, final_audit_date, 
+            undertaking_agreement, signature, application_date, 
+            status
+        ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        throw new Exception("Prepare failed: " . $conn->error);
+    }
+
+    // Bind 16 Parameters: 
+    // s (string) x 13
+    // i (integer) x 1 - for undertaking
+    // s (string) x 2
+    $stmt->bind_param("sssssssssssssiss", 
+        $_POST['applicant_name'], 
+        $_POST['company_name'], 
+        $_POST['business_address'], 
+        $_POST['mailing_address'], 
+        $_POST['ownership_type'], 
+        $_POST['contact_person'], 
+        $_POST['telephone'], 
+        $_POST['email'], 
+        $_POST['application_type'], 
+        $_POST['certification_type'],
+        $_POST['halal_seminar_date'],
+        $_POST['first_audit_date'],
+        $_POST['final_audit_date'],
+        $undertaking,               // Integer (1 or 0)
+        $_POST['signature'],
+        $_POST['application_date']
+    );
+
+    if (!$stmt->execute()) {
+        throw new Exception("Database error: " . $stmt->error);
+    }
+    $app_id = $conn->insert_id;
+
+    // 3. Handle File Uploads (Same as before)
+    $uploadDir = "../uploads/documents/";
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+    $docStmt = $conn->prepare("INSERT INTO application_documents (application_id, document_type, file_path) VALUES (?, ?, ?)");
+
+    foreach ($_FILES as $key => $file) {
+        if ($file['error'] === UPLOAD_ERR_OK) {
+            $tmp_name = $file['tmp_name'];
+            $name = basename($file['name']);
+            $safeName = $app_id . "_" . preg_replace("/[^a-zA-Z0-9.]/", "_", $name);
+            $destination = $uploadDir . $safeName;
+
+            if (move_uploaded_file($tmp_name, $destination)) {
+                $docType = ucfirst(str_replace("_", " ", $key)); 
+                $webPath = "uploads/documents/" . $safeName;
+                
+                $docStmt->bind_param("iss", $app_id, $docType, $webPath);
+                $docStmt->execute();
+            }
+        }
+    }
+
+    // 4. Save Additional Details (Same as before)
+    $detailStmt = $conn->prepare("INSERT INTO application_details (application_id, detail_type, detail_value) VALUES (?, ?, ?)");
+    
+    $dynamicFields = ['product_list', 'establishment_capacity', 'abattoir_capacity'];
+    foreach ($dynamicFields as $field) {
+        if (!empty($_POST[$field])) {
+            $detailStmt->bind_param("iss", $app_id, $field, $_POST[$field]);
+            $detailStmt->execute();
+        }
+    }
+
+    $conn->commit();
+    echo json_encode(["success" => true, "message" => "Application submitted successfully!", "id" => $app_id]);
+
+} catch (Exception $e) {
+    $conn->rollback();
+    echo json_encode(["success" => false, "message" => $e->getMessage()]);
+}
+
+$conn->close();
 ?>

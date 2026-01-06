@@ -3,399 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register - Halal Certifying Body | Halal Keeps</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Certifier Registration - Halal Keeps</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    :root {
-      --primary-green: #0d8c4c;
-      --secondary-green: #16a765;
-      --light-green: #e8f5e9;
-      --card-bg: #ffffff;
-      --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-      --border-radius: 15px;
-      --gray: #555;
-    }
-
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 40px 20px;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
-    }
-
-    .container {
-      max-width: 900px;
-    }
-
-    .logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      box-shadow: 0 5px 20px rgba(13, 140, 76, 0.3);
-      border: 3px solid var(--primary-green);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 2rem;
-      background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-      display: block;
-      margin: 0 auto 20px;
-      animation: fadeInDown 0.6s ease;
+      padding: 2rem 0;
     }
-
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 10px;
-      animation: fadeInDown 0.6s ease 0.1s both;
+    .register-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-top: 5px solid #0d8c4c;
+        width: 100%;
+        max-width: 900px;
     }
-
-    .subtitle {
-      color: var(--gray);
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-      animation: fadeInDown 0.6s ease 0.2s both;
+    .section-title {
+        color: #0d8c4c;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 0.5rem;
     }
-
-    .form-section {
-      background: var(--card-bg);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      padding: 30px;
-      margin-bottom: 24px;
-      border-top: 4px solid var(--primary-green);
-      animation: fadeInUp 0.6s ease 0.3s both;
+    .btn-register {
+        background: #0d8c4c;
+        color: white;
+        padding: 12px;
+        font-weight: 600;
+        border: none;
     }
-
-    .form-section h2 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--primary-green);
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--light-green);
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 8px;
-      font-size: 1rem;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-family: inherit;
-      transition: all 0.3s ease;
-      background-color: #fafafa;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary-green);
-      background-color: white;
-      box-shadow: 0 0 0 3px rgba(13, 140, 76, 0.1);
-    }
-
-    .form-row {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-
-    .form-row .form-group {
-      flex: 1;
-      margin-bottom: 0;
-    }
-
-    .submit-btn {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.3rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(13, 140, 76, 0.3);
-      margin-bottom: 12px;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(13, 140, 76, 0.4);
-    }
-
-    .submit-btn:active {
-      transform: translateY(0);
-    }
-
-    .login-link {
-      text-align: center;
-      color: var(--gray);
-      font-size: 1.05rem;
-    }
-
-    .link {
-      color: var(--primary-green);
-      text-decoration: none;
-      font-weight: 600;
-      position: relative;
-      transition: color 0.3s ease;
-    }
-
-    .link::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary-green);
-      transition: width 0.3s ease;
-    }
-
-    .link:hover {
-      color: var(--secondary-green);
-    }
-
-    .link:hover::after {
-      width: 100%;
-    }
-
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2rem;
-      }
-
-      .form-row {
-        flex-direction: column;
-        gap: 0;
-      }
-
-      .form-section {
-        padding: 25px 20px;
-      }
-
-      .form-section h2 {
-        font-size: 1.2rem;
-      }
-    }
+    .btn-register:hover { background: #0a6d3a; color: white; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo"><i class="fas fa-certificate"></i></div>
-    <h1 class="text-center">Halal Certifying Body Registration</h1>
-    <p class="subtitle text-center">Register your organization to verify and certify halal businesses</p>
-    
-    <form action="actions/register-certifier.php" method="post" autocomplete="off">
-      <!-- CHANGE: Personal Information section for certifier -->
-      <div class="form-section">
-        <h2>Personal Information</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="first_name">First Name</label>
-            <input type="text" id="first_name" name="first_name" placeholder="First name" required>
-          </div>
-          <div class="form-group">
-            <label for="middle_initial">Middle Initial</label>
-            <input type="text" id="middle_initial" name="middle_initial" placeholder="Middle initial" maxlength="1">
-          </div>
+  <div class="container d-flex justify-content-center">
+      <div class="register-card p-4 p-md-5">
+        <div class="text-center mb-4">
+            <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                <i class="bi bi-patch-check-fill fs-3"></i>
+            </div>
+            <h2 class="fw-bold text-dark">Register Certifying Body</h2>
+            <p class="text-muted">Partner with HDIP for Halal Verification</p>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="last_name">Last Name</label>
-            <input type="text" id="last_name" name="last_name" placeholder="Last name" required>
-          </div>
-          <div class="form-group">
-            <label for="age">Age</label>
-            <input type="number" id="age" name="age" placeholder="Age" min="0" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="gender">Gender</label>
-          <select id="gender" name="gender" required>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-      </div>
 
-      <!-- CHANGE: Organization Information section -->
-      <div class="form-section">
-        <h2>Organization Information</h2>
-        <div class="form-group">
-          <label for="org_name">Organization Name</label>
-          <input type="text" id="org_name" name="org_name" placeholder="Enter organization name" required>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="license_number">License/Certification Number</label>
-            <input type="text" id="license_number" name="license_number" placeholder="License number" required>
-          </div>
-          <div class="form-group">
-            <label for="years_experience">Years of Experience</label>
-            <input type="number" id="years_experience" name="years_experience" placeholder="Years" min="0" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="certifications">Relevant Certifications</label>
-          <textarea id="certifications" name="certifications" placeholder="List any relevant certifications or credentials" rows="3"></textarea>
-        </div>
-      </div>
+        <form action="actions/register-certifier.php" method="post">
+            
+            <div class="section-title">Representative Details</div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+                        <label>First Name</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="middle_initial" placeholder="M.I." maxlength="2">
+                        <label>M.I.</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+                        <label>Last Name</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" name="age" placeholder="Age" required>
+                        <label>Age</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <select class="form-select" name="gender" required>
+                            <option value="">Select...</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <label>Gender</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" name="phone" placeholder="Phone" required>
+                        <label>Phone Number</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" name="email" placeholder="Email" required>
+                        <label>Email Address</label>
+                    </div>
+                </div>
+            </div>
 
-      <!-- CHANGE: Location section -->
-      <div class="form-section">
-        <h2>Location</h2>
-        <div class="form-group">
-          <label for="office_address">Office Address</label>
-          <input type="text" id="office_address" name="office_address" placeholder="Enter office address" required>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="city">City</label>
-            <input type="text" id="city" name="city" placeholder="City" required>
-          </div>
-          <div class="form-group">
-            <label for="province">Province</label>
-            <input type="text" id="province" name="province" placeholder="Province" required>
-          </div>
-        </div>
-      </div>
+            <div class="section-title mt-4">Organization & Qualifications</div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="org_name" placeholder="Org Name" required>
+                        <label>Organization Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="license_number" placeholder="License No" required>
+                        <label>License Number</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" name="years_experience" placeholder="Years" required>
+                        <label>Years Experience</label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="certifications" placeholder="List certifications">
+                        <label>Certifications Held</label>
+                    </div>
+                </div>
+            </div>
 
-      <!-- CHANGE: Contact Information section -->
-      <div class="form-section">
-        <h2>Contact Information</h2>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" placeholder="Enter email address" required>
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
-        </div>
-      </div>
+            <div class="section-title mt-4">Office & Security</div>
+            <div class="mb-3">
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="office_address" placeholder="Address" required>
+                    <label>Office Address</label>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="city" placeholder="City" required>
+                        <label>City</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="province" placeholder="Province" required>
+                        <label>Province</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="password" class="form-control" name="password" placeholder="Password" required minlength="8">
+                        <label>Create Password</label>
+                    </div>
+                </div>
+            </div>
 
-      <!-- CHANGE: Account Information section -->
-      <div class="form-section">
-        <h2>Account Information</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Create password" required>
-          </div>
-          <div class="form-group">
-            <label for="confirm_password">Confirm Password</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
-          </div>
-        </div>
-      </div>
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-register rounded-3">Submit Registration</button>
+            </div>
 
-      <button type="submit" class="submit-btn">Register Certifying Body</button>
-      
-      <div class="login-link">
-        Already have an account? <a href="login_certifier.html" class="link">Sign in</a>
+            <div class="text-center">
+                <p class="small text-muted mb-0">
+                    Already registered? <a href="login_certifier.html" class="text-success fw-bold text-decoration-none">Sign In</a>
+                </p>
+            </div>
+        </form>
       </div>
-    </form>
   </div>
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-  function handleRegister(event) {
-    event.preventDefault();
-
-    // Optional simple validation
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm_password').value;
-
-    if (password !== confirmPassword) {
-      alert('Passwords do not match!');
-      return;
-    }
-
-    alert('Registration successful! Redirecting to login page...');
-    window.location.href = 'login_certifier.html';
-  }
-
-    // jQuery Mobile initialization
-    $(document).ready(function() {
-      // Initialize jQuery Mobile
-      $.mobile.initializePage();
-      
-      // Enhanced mobile interactions
-      $('input, select, textarea').on('touchstart', function() {
-        $(this).addClass('ui-btn-active');
-      }).on('touchend', function() {
-        $(this).removeClass('ui-btn-active');
-      });
-      
-      // Form validation
-      $('form').on('submit', function(e) {
-        var password = $('input[name="password"]').val();
-        var confirmPassword = $('input[name="confirm_password"]').val();
-        
-        if (password !== confirmPassword) {
-          e.preventDefault();
-          alert('Passwords do not match!');
-          return false;
-        }
-
-        // Additional validation for organization information
-        var yearsExperience = parseInt($('input[name="years_experience"]').val());
-        if (isNaN(yearsExperience) || yearsExperience < 0) {
-          e.preventDefault();
-          alert('Please enter a valid years of experience value');
-          return false;
-        }
-      });
-    });
-  </script>
 </body>
 </html>

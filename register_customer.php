@@ -3,198 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Registration | Halal Keeps</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <title>Customer Registration - Halal Keeps</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    .form-section {
-      background: var(--card-bg);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      padding: 30px;
-      margin-bottom: 24px;
-      border-top: 4px solid var(--primary-green);
-      animation: fadeInUp 0.6s ease 0.3s both;
-    }
-
-    .form-section h2 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--primary-green);
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--light-green);
-    }
-
-    .form-row {
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
       display: flex;
-      gap: 16px;
-      margin-bottom: 16px;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 0;
     }
-
-    .form-row .form-group {
-      flex: 1;
-      margin-bottom: 0;
+    .register-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-top: 5px solid #198754;
+        width: 100%;
+        max-width: 600px;
     }
-
-    .submit-btn {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.3rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(13, 140, 76, 0.3);
-      margin-bottom: 12px;
+    .btn-register {
+        background: #198754;
+        color: white;
+        padding: 12px;
+        font-weight: 600;
+        border: none;
     }
-
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(13, 140, 76, 0.4);
-    }
-
-    @media (max-width: 768px) {
-      .form-row {
-        flex-direction: column;
-        gap: 0;
-      }
-      
-      .form-section {
-        padding: 25px 20px;
-      }
+    .btn-register:hover { background: #157347; color: white; }
+    .form-section-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #6c757d;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="logo.jpg" alt="Halal Keeps Logo" class="logo">
-    <h1 class="text-center">Customer Registration</h1>
-    <p class="subtitle text-center">Create your customer account</p>
-    
-    <form action="actions/register_customer.php" method="post" autocomplete="off">
-      <div class="form-section">
-        <h2>Personal Information</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="first_name">First Name</label>
-            <input type="text" id="first_name" name="first_name" placeholder="First name" required>
-          </div>
-          <div class="form-group">
-            <label for="middle_initial">Middle Initial</label>
-            <input type="text" id="middle_initial" name="middle_initial" placeholder="Middle initial" maxlength="1">
-          </div>
+  <div class="container d-flex justify-content-center">
+      <div class="register-card p-4 p-md-5">
+        <div class="text-center mb-4">
+            <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                <i class="bi bi-person-fill fs-3"></i>
+            </div>
+            <h2 class="fw-bold text-dark">Join as Customer</h2>
+            <p class="text-muted">Find Halal food near you</p>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="last_name">Last Name</label>
-            <input type="text" id="last_name" name="last_name" placeholder="Last name" required>
-          </div>
-          <div class="form-group">
-            <label for="age">Age</label>
-            <input type="number" id="age" name="age" placeholder="Age" min="0" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="gender">Gender</label>
-          <select id="gender" name="gender" required>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-      </div>
 
-      <div class="form-section">
-        <h2>Contact Information</h2>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" placeholder="Enter email address" required>
-        </div>
-      </div>
+        <form action="actions/register_customer.php" method="post">
+            
+            <div class="form-section-title">Personal Information</div>
+            
+            <div class="row g-2 mb-3">
+                <div class="col-md-5">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+                        <label>First Name</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="middle_initial" placeholder="M.I." maxlength="2">
+                        <label>M.I.</label>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+                        <label>Last Name</label>
+                    </div>
+                </div>
+            </div>
 
-      <div class="form-section">
-        <h2>Location</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="barangay">Barangay</label>
-            <input type="text" id="barangay" name="barangay" placeholder="Enter barangay" required>
-          </div>
-          <div class="form-group">
-            <label for="city">City</label>
-            <input type="text" id="city" name="city" placeholder="City" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="province">Province</label>
-          <input type="text" id="province" name="province" placeholder="Province" required>
-        </div>
-      </div>
+            <div class="form-floating mb-3">
+                <select class="form-select" name="gender" required>
+                    <option value="">Select Gender...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <label>Gender</label>
+            </div>
 
-      <div class="form-section">
-        <h2>Account Security</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Create password" required>
-          </div>
-          <div class="form-group">
-            <label for="confirm_password">Confirm Password</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
-          </div>
-        </div>
-      </div>
+            <div class="form-section-title mt-4">Location</div>
+            <div class="form-floating mb-2">
+                <input type="text" class="form-control" name="barangay" placeholder="Barangay" required>
+                <label>Barangay</label>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="city" placeholder="City" required>
+                        <label>City</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="province" placeholder="Province" required>
+                        <label>Province</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section-title mt-4">Account Security</div>
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" name="email" placeholder="Email" required>
+                <label>Email Address</label>
+            </div>
 
-      <button type="submit" class="submit-btn">Create Customer Account</button>
-      
-      <div class="text-center mt-2">
-        Already have an account? <a href="logintype.php" class="link">Sign in</a>
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" name="password" placeholder="Password" required minlength="6">
+                <label>Password</label>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-register rounded-3">Sign Up</button>
+            </div>
+
+            <div class="text-center">
+                <p class="small text-muted mb-0">
+                    Already have an account? <a href="login_customer.php" class="text-success fw-bold text-decoration-none">Sign In</a>
+                </p>
+            </div>
+        </form>
       </div>
-    </form>
   </div>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Password visibility toggle
-    function togglePassword(id) {
-      var x = document.getElementById(id);
-      if (x.type === "password") {
-        x.type = "text";
-      } else {
-        x.type = "password";
-      }
-    }
-
-    // jQuery Mobile initialization
-    $(document).ready(function() {
-      // Initialize jQuery Mobile
-      $.mobile.initializePage();
-      
-      // Form validation
-      $('form').on('submit', function(e) {
-        var password = $('#password').val();
-        var confirmPassword = $('#confirm_password').val();
-        
-        if (password !== confirmPassword) {
-          e.preventDefault();
-          alert('Passwords do not match!');
-          return false;
-        }
-      });
-      
-      // Mobile-friendly enhancements
-      $('input, select').on('focus', function() {
-        $(this).addClass('ui-focus');
-      }).on('blur', function() {
-        $(this).removeClass('ui-focus');
-      });
-    });
-  </script>
 </body>
-</html> 
+</html>
