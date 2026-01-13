@@ -2,26 +2,42 @@
 require_once "../includes/db.php";
 session_start();
 
-$certifier_id = $_SESSION["certifier_id"];
+header('Content-Type: application/json');
 
-$sql = "SELECT application_id, company_name, submission_date, status 
-        FROM applications 
-        WHERE certifier_id = ? 
-        ORDER BY submission_date DESC 
-        LIMIT 10";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $certifier_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$applications = [];
-while ($row = $result->fetch_assoc()) {
-    $applications[] = $row;
+if (!isset($_SESSION["certifier_id"])) {
+    echo json_encode([]);
+    exit();
 }
 
-echo json_encode($applications);
+try {
+    // Select fields from the new table
+    $sql = "SELECT 
+                id, 
+                company_name, 
+                application_date, 
+                status 
+            FROM halal_certification_applications 
+            ORDER BY created_at DESC 
+            LIMIT 20";
 
-$stmt->close();
+    $result = $conn->query($sql);
+    $applications = [];
+
+    while ($row = $result->fetch_assoc()) {
+        // Map to the format the frontend expects
+        $applications[] = [
+            "application_id" => $row['id'],
+            "company_name" => $row['company_name'],
+            "submission_date" => $row['application_date'], // YYYY-MM-DD
+            "status" => ucfirst($row['status']) // Capitalize status
+        ];
+    }
+
+    echo json_encode($applications);
+
+} catch (Exception $e) {
+    echo json_encode([]);
+}
+
 $conn->close();
 ?>

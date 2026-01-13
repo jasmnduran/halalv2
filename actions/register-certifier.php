@@ -4,57 +4,52 @@ session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // 1. Collect form data
-    $first_name = trim($_POST['first_name']);
-    $middle_initial = trim($_POST['middle_initial']);
-    $last_name = trim($_POST['last_name']);
-    $age = intval($_POST['age']);
-    $gender = trim($_POST['gender']);
-    
     $org_name = trim($_POST['org_name']);
-    $license_number = trim($_POST['license_number']);
-    $years_experience = intval($_POST['years_experience']);
-    $certifications = trim($_POST['certifications']);
-    
-    $office_address = trim($_POST['office_address']);
-    $city = trim($_POST['city']);
-    $province = trim($_POST['province']);
-    
+    $representative_name = trim($_POST['first_name']) . ' ' . trim($_POST['last_name']); // Combine names
+    $accreditation_id = trim($_POST['license_number']); // Mapping license to ID
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
     $password = $_POST['password'];
+    
+    // Address fields
+    $office_address = trim($_POST['office_address']);
+    $city = trim($_POST['city']);
+    $province = trim($_POST['province']);
 
-    // 2. Validate Uniqueness
-    $check = $conn->prepare("SELECT id FROM certifying_bodies WHERE email = ? OR license_number = ?");
-    $check->bind_param("ss", $email, $license_number);
+    // 2. Check for Duplicates in CERTIFIERS table (Not users)
+    $check = $conn->prepare("SELECT id FROM certifiers WHERE email = ?");
+    $check->bind_param("s", $email);
     $check->execute();
     if ($check->get_result()->num_rows > 0) {
-        echo "<script>alert('Email or License Number already registered.'); window.history.back();</script>";
-        exit();
+        die("<script>alert('Email already registered as a certifier.'); window.history.back();</script>");
     }
     $check->close();
 
-    // 3. Hash Password
+    // 3. Insert into CERTIFIERS Table
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
+    $status = 'pending';
 
-    // 4. Insert into `certifying_bodies`
-    $sql = "INSERT INTO certifying_bodies 
-        (first_name, middle_initial, last_name, age, gender, org_name, license_number, years_experience, certifications, office_address, city, province, email, phone, password_hash)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // Ensure this matches your database_final.sql schema exactly
+    $stmt = $conn->prepare("INSERT INTO certifiers 
+        (organization_name, representative_name, accreditation_id, email, phone, password_hash, office_address, city, province, status) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    $stmt = $conn->prepare($sql);
-
-    // Bind Params: 
-    // sssis ssi sssssss (15 params)
-    // age and years_exp are integers (i)
-    $stmt->bind_param("sssisssisssssss",
-        $first_name, $middle_initial, $last_name, $age, $gender,
-        $org_name, $license_number, $years_experience, $certifications,
-        $office_address, $city, $province, $email, $phone, $password_hash
+    $stmt->bind_param("ssssssssss", 
+        $org_name, 
+        $representative_name, 
+        $accreditation_id, 
+        $email, 
+        $phone, 
+        $password_hash, 
+        $office_address, 
+        $city, 
+        $province, 
+        $status
     );
 
     if ($stmt->execute()) {
         echo "<script>
-                alert('Registration successful! Please login.');
+                alert('Registration successful! Please login via the Certifier Portal.');
                 window.location.href = '../login_certifier.html';
               </script>";
     } else {

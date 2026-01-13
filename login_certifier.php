@@ -1,0 +1,222 @@
+<?php
+session_start();
+
+// Auto-redirect if already logged in
+if (isset($_SESSION['certifier_id'])) {
+    header("Location: halal_certifying_body.php");
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Halal Certifying Body | Halal Keeps</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ... (Your existing CSS remains exactly the same) ... */
+    :root {
+      --primary-green: #0d8c4c;
+      --secondary-green: #16a765;
+      --light-green: #e8f5e9;
+      --card-bg: #ffffff;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 15px 50px rgba(0, 0, 0, 0.12);
+      --border-radius: 15px;
+      --gray: #555;
+      --input-border: #ddd;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container { max-width: 480px; width: 100%; }
+
+    .logo {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      box-shadow: 0 5px 20px rgba(13, 140, 76, 0.3);
+      border: 3px solid var(--primary-green);
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 25px;
+      animation: fadeInDown 0.6s ease;
+      background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    }
+
+    h1 {
+      font-size: 2.2rem; font-weight: 700; color: #1a1a1a;
+      text-align: center; margin-bottom: 10px;
+      animation: fadeInDown 0.6s ease 0.1s both;
+    }
+
+    .subtitle {
+      text-align: center; color: var(--gray); font-size: 1.05rem;
+      margin-bottom: 30px; animation: fadeInDown 0.6s ease 0.2s both;
+    }
+
+    .login-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 40px;
+      border-top: 4px solid var(--primary-green);
+      animation: fadeInUp 0.6s ease 0.3s both;
+    }
+
+    .login-card h2 {
+      font-size: 1.8rem; font-weight: 700; color: var(--primary-green);
+      text-align: center; margin-bottom: 30px;
+    }
+
+    .form-group { margin-bottom: 25px; }
+
+    label {
+      display: block; color: #333; font-weight: 600;
+      margin-bottom: 8px; font-size: 0.95rem;
+    }
+
+    .input-wrapper { position: relative; }
+
+    input[type="email"], input[type="password"] {
+      width: 100%; padding: 14px 18px;
+      border: 2px solid var(--input-border); border-radius: 10px;
+      font-size: 1rem; transition: all 0.3s ease; background: #fafafa;
+    }
+
+    input[type="email"]:focus, input[type="password"]:focus {
+      outline: none; border-color: var(--primary-green);
+      background: white; box-shadow: 0 0 0 3px rgba(13, 140, 76, 0.1);
+    }
+
+    input::placeholder { color: #999; }
+
+    .password-toggle {
+      position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--gray);
+      cursor: pointer; font-size: 1.2rem; padding: 5px; transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover { color: var(--primary-green); }
+
+    .submit-btn {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+      color: white; border: none; border-radius: 10px;
+      font-size: 1.1rem; font-weight: 600; cursor: pointer;
+      transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(13, 140, 76, 0.3);
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px); box-shadow: 0 8px 25px rgba(13, 140, 76, 0.4);
+    }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    .link {
+      color: var(--primary-green); text-decoration: none; font-weight: 600;
+      position: relative; transition: color 0.3s ease;
+    }
+
+    .link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 2px; background: var(--primary-green);
+      transition: width 0.3s ease;
+    }
+
+    .link:hover { color: var(--secondary-green); }
+    .link:hover::after { width: 100%; }
+
+    .forgot-password { text-align: center; margin-top: 15px; font-size: 0.95rem; }
+    .register-link { text-align: center; margin-top: 15px; font-size: 0.95rem; }
+    .back-link { text-align: center; margin-top: 25px; }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 576px) {
+      h1 { font-size: 1.8rem; }
+      .login-card { padding: 30px 25px; }
+      .login-card h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><img src="logo.jpg" alt="Logo" class="logo"></div>
+    <h1>Welcome to Halal Keeps</h1>
+    <p class="subtitle">Your trusted platform for verified halal businesses</p>
+    
+    <div class="login-card">
+      <h2>Certifying Body Sign In</h2>
+      
+      <form action="actions/login_certifier.php" method="POST">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword()">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-btn">Sign in</button>
+      </form>
+      
+      <div class="forgot-password">
+        <a href="#" class="link">Forgot Password?</a>
+      </div>
+
+      <div class="register-link">
+        Not registered? <a href="register_certifier.php" class="link">Apply here</a>
+      </div>
+      
+      <div class="back-link">
+        <a href="logintype.php" class="link"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.querySelector('.password-toggle i');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+    // Removed handleLogin function as PHP now handles submission
+  </script>
+</body>
+</html>

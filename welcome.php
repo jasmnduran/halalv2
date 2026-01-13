@@ -1,3 +1,19 @@
+<?php
+session_start();
+
+// Auto-redirect if logged in
+if (isset($_SESSION['user_id'])) {
+    if ($_SESSION['user_role'] === 'owner') {
+        header("Location: owner_dashboard.php");
+    } else {
+        header("Location: customer_dashboard.php");
+    }
+    exit();
+} elseif (isset($_SESSION['certifier_id'])) {
+    header("Location: halal_certifying_body.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,93 +29,42 @@
     :root {
       --primary-green: #0d8c4c;
       --secondary-green: #16a765;
-      --light-green: #e8f5e9;
       --bs-body-bg: #f5f7fa;
       --bs-font-sans-serif: 'Inter', sans-serif;
     }
-
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
-
-    .hero-container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .logo-circle {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      border: 3px solid var(--primary-green);
-      padding: 4px;
-      background: white;
-      box-shadow: 0 10px 25px rgba(13, 140, 76, 0.2);
-      object-fit: cover;
-    }
-
     .main-card {
       background: white;
       border-radius: 1.5rem;
       border: none;
       box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-      overflow: hidden;
       border-top: 5px solid var(--primary-green);
     }
-
-    .feature-card {
-      background: #f8faf9;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      height: 100%;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(0,0,0,0.03);
+    .logo-circle {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-green);
+      padding: 4px; background: white;
+      object-fit: cover;
     }
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-      background: white;
-      border-color: var(--light-green);
-    }
-
     .btn-hero {
       background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-      border: none;
-      padding: 12px 32px;
-      border-radius: 50px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      box-shadow: 0 4px 15px rgba(13, 140, 76, 0.3);
-      transition: all 0.3s ease;
+      border: none; padding: 12px 32px; border-radius: 50px;
+      font-weight: 600; color: white; transition: all 0.3s ease;
     }
-    .btn-hero:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(13, 140, 76, 0.4);
-      background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
-    }
-
-    .check-list li {
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: start;
-      gap: 10px;
-      color: #555;
-    }
-    .check-list i {
-      color: var(--primary-green);
-      font-size: 1.1rem;
-      margin-top: 2px;
-    }
+    .btn-hero:hover { transform: translateY(-2px); color: white; box-shadow: 0 8px 20px rgba(13, 140, 76, 0.3); }
   </style>
 </head>
 <body class="py-5">
 
-  <div class="container hero-container">
+  <div class="container" style="max-width: 1000px;">
     
-    <div class="text-center mb-5 fade-in">
+    <div class="text-center mb-5">
       <img src="logo.jpg" alt="Logo" class="logo-circle mb-4">
       <h1 class="fw-bold display-5 text-dark mb-2">Welcome to Halal Keeps</h1>
       <p class="lead text-success fw-medium">Verified Halal, Anytime, Anywhere.</p>
@@ -110,46 +75,43 @@
         <div class="row g-5 align-items-center">
           
           <div class="col-lg-6">
-            <h2 class="h3 fw-bold mb-3 text-dark">Empowering Communities, Connecting Businesses</h2>
-            <p class="text-secondary mb-4" style="line-height: 1.7;">
-              Halal Keeps connects you to verified halal businesses through a trusted, centralized platform. 
-              Whether you are looking for a meal or growing your business, we ensure quality, compliance, and ethical consumption.
+            <h2 class="h3 fw-bold mb-3 text-dark">Connecting Community & Business</h2>
+            <p class="text-secondary mb-4">
+              Halal Keeps connects you to verified halal businesses through a trusted platform. 
+              Whether you are looking for a meal or growing your business, we ensure quality and compliance.
             </p>
             
-            <ul class="list-unstyled check-list mb-4">
-              <li><i class="bi bi-check-circle-fill"></i> <span>Find halal-friendly food with real-time GPS search</span></li>
-              <li><i class="bi bi-shield-check"></i> <span>Trust blockchain-backed verification data</span></li>
-              <li><i class="bi bi-heart-fill"></i> <span>Support ethical consumption (SDG 8 & 12)</span></li>
-              <li><i class="bi bi-graph-up-arrow"></i> <span>Business analytics & Halal Starter Pack</span></li>
+            <ul class="list-unstyled mb-4 text-secondary">
+              <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Real-time Halal GPS Search</li>
+              <li class="mb-2"><i class="bi bi-shield-check text-success me-2"></i> Blockchain Verification</li>
+              <li class="mb-2"><i class="bi bi-graph-up-arrow text-success me-2"></i> Business Analytics</li>
             </ul>
 
             <div class="d-grid d-sm-block text-center text-sm-start">
-              <button class="btn btn-hero btn-lg text-white" data-bs-toggle="modal" data-bs-target="#authModal">
-                Get Started Now
-              </button>
+              <a href="logintype.php" class="btn btn-hero btn-lg me-sm-2 mb-2 mb-sm-0">Login</a>
+              <a href="registertype.php" class="btn btn-outline-success btn-lg rounded-pill px-4">Register</a>
             </div>
           </div>
 
           <div class="col-lg-6">
             <div class="d-flex flex-column gap-3">
-              <div class="feature-card">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                  <div class="bg-success bg-opacity-10 p-2 rounded-circle text-success">
-                    <i class="bi bi-people-fill fs-4"></i>
+              <div class="p-3 border rounded-3 bg-light">
+                <div class="d-flex align-items-center gap-3">
+                  <i class="bi bi-people-fill fs-2 text-success"></i>
+                  <div>
+                    <h5 class="fw-bold mb-0">For Users</h5>
+                    <small class="text-muted">Find restaurants & leave reviews</small>
                   </div>
-                  <h3 class="h5 fw-bold mb-0 text-dark">For Users</h3>
                 </div>
-                <p class="small text-muted mb-0">Discover certified halal & pork-free dining options nearby. Read community reviews and dine with confidence.</p>
               </div>
-
-              <div class="feature-card">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                  <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary">
-                    <i class="bi bi-shop-window fs-4"></i>
+              <div class="p-3 border rounded-3 bg-light">
+                <div class="d-flex align-items-center gap-3">
+                  <i class="bi bi-shop fs-2 text-primary"></i>
+                  <div>
+                    <h5 class="fw-bold mb-0">For Business Owners</h5>
+                    <small class="text-muted">Get certified & track growth</small>
                   </div>
-                  <h3 class="h5 fw-bold mb-0 text-dark">For Business Owners</h3>
                 </div>
-                <p class="small text-muted mb-0">Showcase your halal status, access market insights, and streamline your certification process.</p>
               </div>
             </div>
           </div>
@@ -158,43 +120,10 @@
       </div>
     </div>
 
-    <div class="text-center text-muted small px-3">
-      <p class="mb-0 max-w-md mx-auto">
-        Halal Keeps empowers communities by promoting responsible and ethical consumption through a trusted digital ecosystem.
-      </p>
-      <div class="mt-3 opacity-50">
-        &copy; <?php echo date("Y"); ?> Halal Keeps. All rights reserved.
-      </div>
+    <div class="text-center text-muted small">
+      &copy; <?php echo date("Y"); ?> Halal Keeps. All rights reserved.
     </div>
 
   </div>
-
-  <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
-        <div class="modal-header border-0 bg-light p-4">
-          <h5 class="modal-title fw-bold mx-auto text-dark">Join Halal Keeps</h5>
-          <button type="button" class="btn-close position-absolute end-0 top-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4 text-center">
-          <p class="text-muted mb-4">Select an option to continue your journey</p>
-          <div class="d-grid gap-3">
-            <a href="logintype.php" class="btn btn-success btn-lg fw-bold py-3 rounded-3 shadow-sm">
-              <i class="bi bi-box-arrow-in-right me-2"></i> Log In
-            </a>
-            <a href="registertype.php" class="btn btn-outline-success btn-lg fw-bold py-3 rounded-3">
-              <i class="bi bi-person-plus me-2"></i> Create Account
-            </a>
-          </div>
-        </div>
-        <div class="modal-footer border-0 bg-light justify-content-center py-3">
-          <small class="text-muted">By continuing, you agree to our Terms & Privacy Policy.</small>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

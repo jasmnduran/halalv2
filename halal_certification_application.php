@@ -375,6 +375,28 @@
     let currentStep = 1;
     const totalSteps = 6;
 
+    // Add this function to fetch user data
+async function initUserProfile() {
+    try {
+        const res = await fetch('api/user.php');
+        const data = await res.json();
+        
+        if (data.is_logged_in && data.user.role === 'owner') {
+            // Auto-fill form fields
+            // We use document.getElementsByName because your form uses name="company_name"
+            if(document.querySelector('[name="applicant_name"]')) document.querySelector('[name="applicant_name"]').value = data.user.name || '';
+            if(document.querySelector('[name="company_name"]')) document.querySelector('[name="company_name"]').value = data.user.business || '';
+            if(document.querySelector('[name="email"]')) document.querySelector('[name="email"]').value = data.user.email || '';
+            if(document.querySelector('[name="contact_person"]')) document.querySelector('[name="contact_person"]').value = data.user.name || '';
+            
+            // Handle Address (textarea)
+            if(document.querySelector('[name="business_address"]')) document.querySelector('[name="business_address"]').value = data.user.location || '';
+        }
+    } catch (e) {
+        console.error("Auto-fill error:", e);
+    }
+}
+
     const docsMap = {
       product: ['Letter of Intent', 'SEC/DTI Reg', 'Product Specs', 'Ingredient List', 'Process Flow', 'Packaging Info'],
       establishment: ['SEC/DTI Reg', 'Company Profile', 'Process Flow', 'ECC', 'Floor Plan', 'Mayor\'s Permit', 'Sanitary Permit'],
@@ -441,6 +463,13 @@
     }
 
     document.getElementById('application_date').value = new Date().toISOString().split('T')[0];
+    // ... existing code ...
+
+document.addEventListener('DOMContentLoaded', () => {
+    initUserProfile(); // <--- Call the function here
+    
+    // Any other startup logic you have...
+});
   </script>
 </body>
 </html>

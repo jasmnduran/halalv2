@@ -2,38 +2,40 @@
 require_once "../includes/db.php";
 session_start();
 
-$certifier_id = $_SESSION["certifier_id"];
+header('Content-Type: application/json');
 
-$stats = [
-    "total" => 0,
-    "pending" => 0,
-    "approved" => 0,
-    "rejected" => 0
-];
+// Ensure certifier is logged in
+if (!isset($_SESSION["certifier_id"])) {
+    echo json_encode(["total" => 0, "pending" => 0, "approved" => 0, "rejected" => 0]);
+    exit();
+}
 
-$sql = "SELECT 
-            COUNT(*) AS total,
-            SUM(status = 'Pending') AS pending,
-            SUM(status = 'Approved') AS approved,
-            SUM(status = 'Rejected') AS rejected
-        FROM applications
-        WHERE certifier_id = ?";
+try {
+    // Queries matching the new schema
+    $sql = "SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status = 'Approved' THEN 1 ELSE 0 END) as approved,
+                SUM(CASE WHEN status = 'Rejected' THEN 1 ELSE 0 END) as rejected
+            FROM halal_certification_applications";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $certifier_id);
-$stmt->execute();
-$stmt->bind_result($total, $pending, $approved, $rejected);
-$stmt->fetch();
+    $result = $conn->query($sql);
+    $data = $result->fetch_assoc();
 
-$stats = [
-    "total" => (int)$total,
-    "pending" => (int)$pending,
-    "approved" => (int)$approved,
-    "rejected" => (int)$rejected
-];
+    // Ensure integers are returned (MySQL returns strings for SUM)
+    $stats = [
+        "total" => (int) ($data['total'] ?? 0),
+        "pending" => (int) ($data['pending'] ?? 0),
+        "approved" => (int) ($data['approved'] ?? 0),
+        "rejected" => (int) ($data['rejected'] ?? 0)
+    ];
 
-echo json_encode($stats);
+    echo json_encode($stats);
 
-$stmt->close();
+} catch (Exception $e) {
+    // Return zeros on error
+    echo json_encode(["total" => 0, "pending" => 0, "approved" => 0, "rejected" => 0]);
+}
+
 $conn->close();
 ?>
