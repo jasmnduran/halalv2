@@ -1,3 +1,11 @@
+<?php
+session_start();
+// Security: Only Business Owners can apply
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'owner') {
+    header("Location: login_owner.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -193,7 +201,7 @@
             </div>
 
             <div class="form-section" id="section-2" style="display: none;">
-                <h4 class="fw-bold text-success mb-4"><i class="bi bi-list-check me-2"></i>Certification Scope</h4>
+                <h4 class="fw-bold text-sucacess mb-4"><i class="bi bi-list-check me-2"></i>Certification Scope</h4>
                 
                 <label class="form-label fw-bold small text-uppercase text-muted">Application Type</label>
                 <div class="row g-3 mb-4">

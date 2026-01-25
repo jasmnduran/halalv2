@@ -1,12 +1,27 @@
 <?php
+require_once "includes/db.php"; // Adjust path as needed
+session_start();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_id'])) {
-    $file = 'reviews.json';
-    $reviews = file_exists($file) ? json_decode(file_get_contents($file), true) : [];
-    $id = intval($_POST['review_id']);
-    if (isset($reviews[$id])) {
-        array_splice($reviews, $id, 1);
-        file_put_contents($file, json_encode($reviews, JSON_PRETTY_PRINT));
+    
+    // Auth Check
+    if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'customer') {
+        die("Unauthorized");
     }
+
+    $review_id = intval($_POST['review_id']);
+    $user_id = $_SESSION['user_id'];
+
+    // Delete only if the review belongs to the logged-in user
+    $stmt = $conn->prepare("DELETE FROM reviews WHERE id = ? AND reviewer_id = ?");
+    $stmt->bind_param("ii", $review_id, $user_id);
+    $stmt->execute();
+    
+    $stmt->close();
+    $conn->close();
 }
+
+// Redirect back to dashboard
 header('Location: customer_dashboard.php');
-exit; 
+exit;
+?>

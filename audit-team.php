@@ -1,7 +1,12 @@
 <?php
 session_start();
-// In a real app, implement a specific login for auditors or reuse certifier login
-// if (!isset($_SESSION['auditor_id'])) header("Location: login_certifier.html");
+// FIXED: Strict check for AUDITOR ID. 
+// If you are a Certifier, you cannot access this page (Separation of Duties).
+if (!isset($_SESSION['auditor_id'])) {
+    // Assuming you have a login page named login_auditor.html or similar
+    header("Location: login_auditor.html"); 
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

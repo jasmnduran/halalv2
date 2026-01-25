@@ -1,61 +1,81 @@
 <?php
-// Get transaction hash from query string
-$tx = isset($_GET['tx']) ? $_GET['tx'] : null;
+require_once "includes/db.php";
+
+$tx = isset($_GET['tx']) ? trim($_GET['tx']) : null;
+$isValid = false;
+$record = null;
+
+if ($tx) {
+    // Check if this hash exists in Applications OR Claims
+    // 1. Check Applications
+    $stmt = $conn->prepare("SELECT company_name, 'Certification' as type, status FROM halal_certification_applications WHERE blockchain_tx = ?");
+    $stmt->bind_param("s", $tx);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    
+    if ($res->num_rows > 0) {
+        $isValid = true;
+        $record = $res->fetch_assoc();
+    } else {
+        // 2. Check Customer Claims
+        $stmt2 = $conn->prepare("SELECT id, 'Customer Claim' as type, status FROM customer_claims WHERE blockchain_tx = ?");
+        $stmt2->bind_param("s", $tx);
+        $stmt2->execute();
+        $res2 = $stmt2->get_result();
+        if ($res2->num_rows > 0) {
+            $isValid = true;
+            $record = $res2->fetch_assoc();
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Blockchain Verification - Halal Keeps</title>
-  
+  <title>Blockchain Verification</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <style>
-    body { font-family: 'Inter', sans-serif; background: #f6f8fa; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .verify-card { max-width: 550px; width: 100%; border: none; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-    .hash-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 0.5rem; padding: 1rem; word-break: break-all; font-family: 'Courier New', monospace; color: #495057; }
-    .icon-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
-  </style>
+  <style>body { background: #f6f8fa; min-height: 100vh; display: flex; align-items: center; justify-content: center; }</style>
 </head>
 <body class="p-3">
-  <div class="card verify-card p-4 p-md-5">
+  <div class="card p-5 border-0 shadow" style="max-width: 550px; width: 100%;">
     
-    <?php if ($tx): ?>
+    <?php if ($isValid): ?>
       <div class="text-center">
-        <div class="icon-circle bg-success bg-opacity-10 text-success">
-            <i class="bi bi-shield-check display-3"></i>
+        <div class="text-success mb-3"><i class="bi bi-shield-fill-check display-1"></i></div>
+        <h2 class="fw-bold mb-2">Verified Record</h2>
+        <span class="badge bg-success mb-4">On-Chain Verified</span>
+        
+        <div class="alert alert-light border text-start">
+            <strong>Record Type:</strong> <?= htmlspecialchars($record['type']) ?><br>
+            <strong>Status:</strong> <?= htmlspecialchars($record['status']) ?><br>
+            <?php if(isset($record['company_name'])): ?>
+                <strong>Entity:</strong> <?= htmlspecialchars($record['company_name']) ?>
+            <?php endif; ?>
         </div>
         
-        <span class="badge bg-success rounded-pill px-3 py-2 mb-3">Verified on Blockchain</span>
-        <h2 class="fw-bold mb-4">Transaction Verified</h2>
-        
-        <p class="text-muted small text-uppercase fw-bold mb-2">Transaction Hash</p>
-        <div class="hash-box mb-4">
+        <p class="text-muted small fw-bold">Transaction Hash</p>
+        <div class="bg-light p-2 rounded border text-break font-monospace small mb-4">
             <?= htmlspecialchars($tx) ?>
         </div>
 
-        <a href="https://mumbai.polygonscan.com/tx/<?= urlencode($tx) ?>" target="_blank" class="btn btn-outline-primary rounded-pill px-4 mb-3">
-            <i class="bi bi-box-arrow-up-right me-2"></i>View on PolygonScan
+        <a href="https://mumbai.polygonscan.com/tx/<?= urlencode($tx) ?>" target="_blank" class="btn btn-primary w-100 rounded-pill">
+            View on PolygonScan
         </a>
       </div>
     <?php else: ?>
       <div class="text-center">
-        <div class="icon-circle bg-danger bg-opacity-10 text-danger">
-            <i class="bi bi-exclamation-triangle display-3"></i>
-        </div>
-        <h3 class="fw-bold text-danger mb-3">Verification Failed</h3>
-        <p class="text-muted">No transaction hash was provided or the record could not be found.</p>
+        <div class="text-danger mb-3"><i class="bi bi-x-circle display-1"></i></div>
+        <h3 class="fw-bold text-danger">Verification Failed</h3>
+        <p class="text-muted">The transaction hash provided could not be found in our verified records.</p>
+        <?php if($tx): ?>
+            <div class="bg-light p-2 rounded border text-break font-monospace small text-muted">
+                <?= htmlspecialchars($tx) ?>
+            </div>
+        <?php endif; ?>
       </div>
     <?php endif; ?>
 
-    <div class="text-center mt-4 pt-3 border-top">
-      <a href="owner_dashboard.php" class="text-decoration-none text-secondary fw-bold">
-        <i class="bi bi-arrow-left me-1"></i> Return to Dashboard
-      </a>
-    </div>
   </div>
 </body>
 </html>

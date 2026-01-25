@@ -1,3 +1,11 @@
+<?php
+session_start();
+// Security: Only Owners
+if (!isset($_SESSION['owner_id'])) {
+    header("Location: login_owner.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

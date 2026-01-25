@@ -1,3 +1,11 @@
+<?php
+session_start();
+// Security: Redirect if not logged in as owner
+if (!isset($_SESSION['owner_id']) && (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'owner')) {
+    header("Location: login_owner.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

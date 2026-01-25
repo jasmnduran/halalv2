@@ -130,6 +130,37 @@ CREATE TABLE IF NOT EXISTS customer_claims (
     FOREIGN KEY (business_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS certifiers (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    organization_name VARCHAR(191) NOT NULL,
+    representative_name VARCHAR(100) NOT NULL,
+    accreditation_id VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(191) NOT NULL UNIQUE,
+    phone VARCHAR(20) NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    office_address TEXT NULL,
+    city VARCHAR(100) NULL,
+    province VARCHAR(100) NULL,
+    status ENUM('pending', 'active', 'suspended') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- Create the distinct Auditors table
+CREATE TABLE IF NOT EXISTS auditors (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(191) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NULL,
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- (Optional) If you want to link specific auditors to specific applications later, 
+-- you might need an 'auditor_id' column in the 'halal_certification_applications' table,
+-- but for now, the logic handles it via the 'inspection_scheduled' status.
+
 -- Indexes for Performance
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);

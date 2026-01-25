@@ -3,11 +3,12 @@ require_once "../includes/db.php";
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
-        die("Please enter email and password.");
+        echo "<script>alert('Please enter email and password.'); window.history.back();</script>";
+        exit;
     }
 
     // Check Certifiers Table
@@ -21,9 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (password_verify($password, $certifier['password_hash'])) {
             
+            // FIXED: Enforce Account Status Check
             if ($certifier['status'] !== 'active' && $certifier['status'] !== 'approved') {
-                // Optional: Block pending accounts
-                // die("Your account is still pending approval.");
+                 echo "<script>alert('Your account is currently " . htmlspecialchars($certifier['status']) . ". Please wait for admin approval.'); window.history.back();</script>";
+                 exit;
             }
 
             session_regenerate_id(true);

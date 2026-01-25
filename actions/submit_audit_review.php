@@ -1,38 +1,51 @@
 <?php
 require_once "../includes/db.php";
 session_start();
-
 header('Content-Type: application/json');
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $app_id = intval($_POST['app_id']);
-    $verdict = $_POST['final_verdict']; // 'Approved' or 'Rejected'
-    
-    // In a real system, you would verify the session auditor here
-    // if(!isset($_SESSION['auditor_id'])) die...
+// FIXED: Check for auditor_id
+if (!isset($_SESSION['auditor_id'])) {
+    echo json_encode(["success" => false, "message" => "Unauthorized: Auditors only."]);
+    exit;
+}
 
-    // 1. Prepare Inspection Data (serialized for simple storage)
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $app_id = intval($_POST['app_id'] ?? 0);
+    $verdict = $_POST['final_verdict'] ?? ''; 
+    
+    if ($app_id <= 0 || !in_array($verdict, ['Approved', 'Rejected'])) {
+        echo json_encode(["success" => false, "message" => "Invalid input."]);
+        exit;
+    }
+
+    // Capture Auditor ID in the JSON report
     $inspection_data = json_encode([
-        'materials' => ['status' => $_POST['check_materials'], 'remarks' => $_POST['rem_materials']],
-        'storage' => ['status' => $_POST['check_storage'], 'remarks' => $_POST['rem_storage']],
-        'process' => ['status' => $_POST['check_process'], 'remarks' => $_POST['rem_process']],
-        'waste' => ['status' => $_POST['check_waste'], 'remarks' => $_POST['rem_waste']],
-        'auditor_date' => date('Y-m-d H:i:s')
+        'materials' => ['status' => $_POST['check_materials']??0, 'remarks' => $_POST['rem_materials']??''],
+        'storage' => ['status' => $_POST['check_storage']??0, 'remarks' => $_POST['rem_storage']??''],
+        'process' => ['status' => $_POST['check_process']??0, 'remarks' => $_POST['rem_process']??''],
+        'waste' => ['status' => $_POST['check_waste']??0, 'remarks' => $_POST['rem_waste']??''],
+        'auditor_id' => $_SESSION['auditor_id'], // Storing WHO did the audit
+        'auditor_name' => $_SESSION['auditor_name'],
+        'audit_date' => date('Y-m-d H:i:s')
     ]);
 
-    // 2. Update Application Status
-    $stmt = $conn->prepare("UPDATE halal_certification_applications SET status = ?, updated_at = NOW() WHERE id = ?");
+    // Update DB
+    $stmt = $conn->prepare("UPDATE halal_certification_applications SET status = ? WHERE id = ?");
     $stmt->bind_param("si", $verdict, $app_id);
 
     if ($stmt->execute()) {
-        // 3. Log Detailed Findings (Optional: Save to details table)
+        // Save Report
+        $delStmt = $conn->prepare("DELETE FROM application_details WHERE application_id = ? AND detail_type = 'audit_report'");
+        $delStmt->bind_param("i", $app_id);
+        $delStmt->execute();
+
         $detailStmt = $conn->prepare("INSERT INTO application_details (application_id, detail_type, detail_value) VALUES (?, 'audit_report', ?)");
         $detailStmt->bind_param("is", $app_id, $inspection_data);
         $detailStmt->execute();
 
         echo json_encode(["success" => true]);
     } else {
-        echo json_encode(["success" => false, "message" => "Database update failed"]);
+        echo json_encode(["success" => false, "message" => "Update failed."]);
     }
 
     $stmt->close();

@@ -1,37 +1,64 @@
 <?php
+// halalv2/actions/save_inspection.php
 require_once "../includes/db.php";
 session_start();
 
+header('Content-Type: application/json');
+
+// 1. Auth Check
+if (!isset($_SESSION["certifier_id"])) {
+    echo json_encode(["success" => false, "message" => "Unauthorized access."]);
+    exit;
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $certifier_id = $_SESSION["certifier_id"];
-    $company_name = $_POST["company_name"];
-    $contact_person = $_POST["contact_person"];
-    $address = $_POST["address"];
-    $contact_no = $_POST["contact_no"];
-    $audit_date = $_POST["audit_date"];
-    $auditor_notes = $_POST["auditor_notes"];
-    $documents = json_decode($_POST["documents"], true);
-
-    $stmtApp = $conn->prepare("INSERT INTO applications (company_name, contact_person, address, contact_no, status, certifier_id) VALUES (?, ?, ?, ?, 'Reviewing', ?)");
-    $stmtApp->bind_param("ssssi", $company_name, $contact_person, $address, $contact_no, $certifier_id);
-    $stmtApp->execute();
-    $application_id = $stmtApp->insert_id;
-    $stmtApp->close();
-
     
-    $stmtAudit = $conn->prepare("INSERT INTO audit_inspections (application_id, certifier_id, audit_date, notes) VALUES (?, ?, ?, ?)");
-    $stmtAudit->bind_param("iiss", $application_id, $certifier_id, $audit_date, $auditor_notes);
-    $stmtAudit->execute();
-    $audit_id = $stmtAudit->insert_id;
-    $stmtAudit->close();
+    $app_id = intval($_POST['app_id'] ?? 0);
+    $final_status = $_POST['final_status'] ?? 'Pending';
+    $remarks = trim($_POST['remarks'] ?? '');
 
-    $stmtDoc = $conn->prepare("INSERT INTO document_checklist (audit_id, document_no, document_name, status, remarks) VALUES (?, ?, ?, ?, ?)");
-    foreach ($documents as $doc) {
-        $stmtDoc->bind_param("iisss", $audit_id, $doc['id'], $doc['name'], $doc['status'], $doc['remarks']);
-        $stmtDoc->execute();
+    // Validate Status Enum
+    $allowed_statuses = ['Pending', 'Approved', 'Rejected']; // Removed 'Under Review' to match DB Enum if strict
+    // If your DB has 'Under Review', add it here.
+    
+    if ($app_id <= 0) {
+        echo json_encode(["success" => false, "message" => "Invalid Application ID."]);
+        exit;
     }
-    $stmtDoc->close();
 
-    echo json_encode(["success" => true, "message" => "Inspection saved successfully."]);
+    try {
+        $conn->begin_transaction();
+
+        // 2. Update Application Status
+        // Note: Using 'Inspection Scheduled' or 'Under Review' might be better intermediate steps,
+        // but the frontend sends Approved/Rejected directly.
+        $stmt = $conn->prepare("UPDATE halal_certification_applications SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $final_status, $app_id);
+        
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to update status.");
+        }
+
+        // 3. Save Remarks (into application_details as 'auditor_remarks')
+        // We first delete old remarks to avoid duplicates, or we could append. Replacing is usually cleaner.
+        $delStmt = $conn->prepare("DELETE FROM application_details WHERE application_id = ? AND detail_type = 'auditor_remarks'");
+        $delStmt->bind_param("i", $app_id);
+        $delStmt->execute();
+
+        if (!empty($remarks)) {
+            $rmkStmt = $conn->prepare("INSERT INTO application_details (application_id, detail_type, detail_value) VALUES (?, 'auditor_remarks', ?)");
+            $rmkStmt->bind_param("is", $app_id, $remarks);
+            $rmkStmt->execute();
+        }
+
+        $conn->commit();
+        echo json_encode(["success" => true, "message" => "Review saved successfully."]);
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
+    }
+
+    $conn->close();
 }
 ?>

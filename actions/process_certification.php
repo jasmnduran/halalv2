@@ -4,7 +4,6 @@ session_start();
 
 header('Content-Type: application/json');
 
-// 1. Basic Validation
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
     exit;
@@ -13,10 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 try {
     $conn->begin_transaction();
 
-    // Prepare variables (Sanitization happens via bind_param)
+    // 1. Prepare Application Data
     $undertaking = isset($_POST['undertaking_agreement']) ? 1 : 0;
     
-    // 2. Insert Main Application (COMPLETE QUERY)
     $sql = "INSERT INTO halal_certification_applications 
         (
             applicant_name, company_name, business_address, mailing_address, 
@@ -29,66 +27,70 @@ try {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
 
     $stmt = $conn->prepare($sql);
+    if (!$stmt) throw new Exception("Prepare failed: " . $conn->error);
 
-    if (!$stmt) {
-        throw new Exception("Prepare failed: " . $conn->error);
-    }
-
-    // Bind 16 Parameters: 
-    // s (string) x 13
-    // i (integer) x 1 - for undertaking
-    // s (string) x 2
     $stmt->bind_param("sssssssssssssiss", 
-        $_POST['applicant_name'], 
-        $_POST['company_name'], 
-        $_POST['business_address'], 
-        $_POST['mailing_address'], 
-        $_POST['ownership_type'], 
-        $_POST['contact_person'], 
-        $_POST['telephone'], 
-        $_POST['email'], 
-        $_POST['application_type'], 
-        $_POST['certification_type'],
-        $_POST['halal_seminar_date'],
-        $_POST['first_audit_date'],
-        $_POST['final_audit_date'],
-        $undertaking,               // Integer (1 or 0)
-        $_POST['signature'],
-        $_POST['application_date']
+        $_POST['applicant_name'], $_POST['company_name'], $_POST['business_address'], 
+        $_POST['mailing_address'], $_POST['ownership_type'], $_POST['contact_person'], 
+        $_POST['telephone'], $_POST['email'], $_POST['application_type'], 
+        $_POST['certification_type'], $_POST['halal_seminar_date'], 
+        $_POST['first_audit_date'], $_POST['final_audit_date'], 
+        $undertaking, $_POST['signature'], $_POST['application_date']
     );
 
-    if (!$stmt->execute()) {
-        throw new Exception("Database error: " . $stmt->error);
-    }
+    if (!$stmt->execute()) throw new Exception("Database error: " . $stmt->error);
     $app_id = $conn->insert_id;
 
-    // 3. Handle File Uploads (Same as before)
+    // 2. Secure File Uploads
     $uploadDir = "../uploads/documents/";
-    if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true); // 0755 is safer than 0777
+
+    // Allowed MIME types and Extensions
+    $allowedTypes = [
+        'application/pdf' => 'pdf',
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png'
+    ];
+    $maxFileSize = 5 * 1024 * 1024; // 5MB
 
     $docStmt = $conn->prepare("INSERT INTO application_documents (application_id, document_type, file_path) VALUES (?, ?, ?)");
 
     foreach ($_FILES as $key => $file) {
         if ($file['error'] === UPLOAD_ERR_OK) {
-            $tmp_name = $file['tmp_name'];
-            $name = basename($file['name']);
-            $safeName = $app_id . "_" . preg_replace("/[^a-zA-Z0-9.]/", "_", $name);
+            
+            // Security Checks
+            if ($file['size'] > $maxFileSize) {
+                throw new Exception("File too large: " . $file['name']);
+            }
+            
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->file($file['tmp_name']);
+
+            if (!array_key_exists($mime, $allowedTypes)) {
+                throw new Exception("Invalid file type for " . $file['name'] . ". Only PDF and Images allowed.");
+            }
+
+            // Generate Safe Filename
+            $ext = $allowedTypes[$mime];
+            $safeName = $app_id . "_" . uniqid() . "." . $ext;
             $destination = $uploadDir . $safeName;
 
-            if (move_uploaded_file($tmp_name, $destination)) {
+            if (move_uploaded_file($file['tmp_name'], $destination)) {
                 $docType = ucfirst(str_replace("_", " ", $key)); 
                 $webPath = "uploads/documents/" . $safeName;
                 
                 $docStmt->bind_param("iss", $app_id, $docType, $webPath);
                 $docStmt->execute();
+            } else {
+                throw new Exception("Failed to move uploaded file.");
             }
         }
     }
 
-    // 4. Save Additional Details (Same as before)
+    // 3. Save Additional Details
     $detailStmt = $conn->prepare("INSERT INTO application_details (application_id, detail_type, detail_value) VALUES (?, ?, ?)");
+    $dynamicFields = ['product_list', 'establishment_capacity', 'abattoir_capacity', 'product_categories', 'establishment_type', 'animal_types'];
     
-    $dynamicFields = ['product_list', 'establishment_capacity', 'abattoir_capacity'];
     foreach ($dynamicFields as $field) {
         if (!empty($_POST[$field])) {
             $detailStmt->bind_param("iss", $app_id, $field, $_POST[$field]);
@@ -101,6 +103,7 @@ try {
 
 } catch (Exception $e) {
     $conn->rollback();
+    error_log("Application Error: " . $e->getMessage());
     echo json_encode(["success" => false, "message" => $e->getMessage()]);
 }
 

@@ -10,7 +10,6 @@ $response = [
 ];
 
 if (isset($_SESSION['user_id'])) {
-    // Fetch fresh data from DB (in case name/role changed)
     $stmt = $conn->prepare("SELECT id, name, email, role, business_name, address FROM users WHERE id = ?");
     $stmt->bind_param("i", $_SESSION['user_id']);
     $stmt->execute();
@@ -24,7 +23,7 @@ if (isset($_SESSION['user_id'])) {
             'email' => $user['email'],
             'role' => $user['role'],
             'business' => $user['business_name'] ?? null,
-            'location' => $user['address'] ?? 'Davao City'
+            'location' => $user['address'] ?? '' // Removed 'Davao City' hardcode
         ];
     }
     $stmt->close();

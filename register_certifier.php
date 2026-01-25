@@ -2,47 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Certifier Registration - Halal Keeps</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
   <style>
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 0;
-    }
-    .register-card {
-        background: white;
-        border-radius: 1rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        border-top: 5px solid #0d8c4c;
-        width: 100%;
-        max-width: 900px;
-    }
-    .section-title {
-        color: #0d8c4c;
-        font-weight: 600;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid #e9ecef;
-        padding-bottom: 0.5rem;
-    }
-    .btn-register {
-        background: #0d8c4c;
-        color: white;
-        padding: 12px;
-        font-weight: 600;
-        border: none;
-    }
+    body { background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 0; }
+    .register-card { background: white; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-top: 5px solid #0d8c4c; width: 100%; max-width: 900px; }
+    .section-title { color: #0d8c4c; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 1rem; border-bottom: 1px solid #e9ecef; padding-bottom: 0.5rem; }
+    .btn-register { background: #0d8c4c; color: white; padding: 12px; font-weight: 600; border: none; }
     .btn-register:hover { background: #0a6d3a; color: white; }
   </style>
 </head>
@@ -50,9 +17,6 @@
   <div class="container d-flex justify-content-center">
       <div class="register-card p-4 p-md-5">
         <div class="text-center mb-4">
-            <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                <i class="bi bi-patch-check-fill fs-3"></i>
-            </div>
             <h2 class="fw-bold text-dark">Register Certifying Body</h2>
             <p class="text-muted">Partner with HDIP for Halal Verification</p>
         </div>
@@ -61,7 +25,7 @@
             
             <div class="section-title">Representative Details</div>
             <div class="row g-3 mb-3">
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="form-floating">
                         <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
                         <label>First Name</label>
@@ -73,35 +37,19 @@
                         <label>M.I.</label>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="form-floating">
                         <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
                         <label>Last Name</label>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="form-floating">
-                        <input type="number" class="form-control" name="age" placeholder="Age" required>
-                        <label>Age</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <select class="form-select" name="gender" required>
-                            <option value="">Select...</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                        <label>Gender</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="tel" class="form-control" name="phone" placeholder="Phone" required>
                         <label>Phone Number</label>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="email" class="form-control" name="email" placeholder="Email" required>
                         <label>Email Address</label>
@@ -120,19 +68,7 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" name="license_number" placeholder="License No" required>
-                        <label>License Number</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <input type="number" class="form-control" name="years_experience" placeholder="Years" required>
-                        <label>Years Experience</label>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="certifications" placeholder="List certifications">
-                        <label>Certifications Held</label>
+                        <label>Accreditation / License Number</label>
                     </div>
                 </div>
             </div>
@@ -171,7 +107,7 @@
 
             <div class="text-center">
                 <p class="small text-muted mb-0">
-                    Already registered? <a href="login_certifier.html" class="text-success fw-bold text-decoration-none">Sign In</a>
+                    Already registered? <a href="login_certifier.php" class="text-success fw-bold text-decoration-none">Sign In</a>
                 </p>
             </div>
         </form>
